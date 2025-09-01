@@ -10,7 +10,7 @@
 ############################
 
 # Name of website
-title: Ren’s Cyber
+title: Ren’s Cyber Sec
 
 # Your name to show in the footer
 author: Ren
@@ -33,7 +33,7 @@ navbar-links:
 
 # Image to show in the navigation bar - works best with a square image
 # Remove this parameter if you don't want an image in the navbar
-avatar: "/assets/img/avatar-icon.png"
+avatar: "assets/img/Profile.png"
 
 # By default, the image is cut into a circle. You can disable this behaviour by setting 'round-avatar: false'
 round-avatar: true
@@ -137,17 +137,17 @@ navbar-var-length: false
 
 # Personalize the colours in your website. Colour values can be any valid CSS colour
 
-page-col: "#FAF4EF"             # Soft warm cream background
-text-col: "#5A4E4D"             # Muted warm dark brown for text
-link-col: "#C46828"             # Soft terracotta/orange-brown for links
-hover-col: "#A95A20"            # Darker terracotta for hover effect
-navbar-col: "#F5EDE7"           # Light beige navbar
-navbar-text-col: "#5A4E4D"      # Same as main text for consistency
-navbar-border-col: "#E0D6CE"    # Soft beige-gray border for subtle contrast
-footer-col: "#F5EDE7"           # Match navbar for visual continuity
-footer-text-col: "#8B7C76"      # Muted brown-gray for low emphasis
-footer-link-col: "#5A4E4D"      # Same as text color, readable
-footer-hover-col: "#A95A20"     # Match link hover for consistency
+page-col: "#FFF8F1"             # Warm ivory background with a sunlit feel
+text-col: "#4B3832"             # Rich espresso brown for strong contrast but still warm
+link-col: "#D98555"             # Warm clay-orange for friendly, noticeable links
+hover-col: "#B7653A"            # Deep terracotta for hover state
+navbar-col: "#FFEFE1"           # Soft peachy beige for warmth and light
+navbar-text-col: "#4B3832"      # Match main text for readability
+navbar-border-col: "#E9D8CE"    # Light sand-colored border for soft structure
+footer-col: "#FFEFE1"           # Match navbar to keep it light and connected
+footer-text-col: "#7B665E"      # Warm taupe for subtle but readable text
+footer-link-col: "#4B3832"      # Same as main text for consistency
+footer-hover-col: "#B7653A"     # Match link hover for a cohesive pop
 
 # Alternatively, the navbar, footer, and page background can be set to an image
 # instead of colour
