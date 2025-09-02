@@ -1,4 +1,5 @@
 ---
+layout: page
 subtitle: A collection of categorized posts
 ---
 
