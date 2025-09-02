@@ -21,6 +21,18 @@ For the investigation, you will be provided with the following artefacts:
 Note: The `powershell.json` file contains JSON-formatted PowerShell logs extracted from its original EVTX file using the evtx2json tool. 
   You can find these files in the /home/ubuntu/Desktop/artefacts. 
 
+### Tools 
+The provided VM includes the following tools for investigation: 
+- Thunderbird: A free and open-source cross-platform email client. 
+- LNKParse3: A Python package for analyzing binary files with LNK extensions. 
+- Wireshark: A GUI-based packet analyzer. 
+- Tshark: The CLI version of Wireshark. 
+- jq: A lightweight and flexible command-line JSON processor. 
+
+
+
+
+
 
 
 **Here is some bold text**
