@@ -21,7 +21,7 @@ author: Ren
 
 navbar-links:
   About Me: "aboutme"
-  Post Category: 
+  Post Category: "category"
   Project:
   Learning Resources:
     - Try Hack Me: "https://tryhackme.com/"
