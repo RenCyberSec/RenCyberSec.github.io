@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Aʙᴏᴜᴛ ᴍᴇ
+title: About Me
 subtitle: Let's talk about myself for a little bit
 ---
 
