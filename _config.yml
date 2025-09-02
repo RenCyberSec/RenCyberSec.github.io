@@ -22,10 +22,12 @@ author: Ren
 navbar-links:
   About Me: "aboutme"
   Post Category: 
-  Resources:
-    - Beautiful Jekyll: "https://beautifuljekyll.com"
-    - Learn markdown: "https://www.markdowntutorial.com/"
-  Author's home: "https://deanattali.com"
+  Project:
+  Learning Resources:
+    - Try Hack Me: "https://tryhackme.com/"
+    - TCM Security Training: "https://academy.tcm-sec.com/"
+    - PortSwigger Academy: "https://portswigger.net/web-security"
+    - AppSecExplained: "https://appsecexplained.gitbook.io/appsecexplained/"
 
 ################
 # --- Logo --- #
