@@ -1,6 +1,5 @@
 ---
 layout: page
-subtitle: A collection of categorized posts
 ---
 
 <details markdown="1">
