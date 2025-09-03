@@ -1,0 +1,249 @@
+---
+layout: post
+title: SOC Level 1 Challenges – Boogeyman 2
+date: 2024-10-11 09:34
+author: yurenjoeysie
+comments: true
+categories: [TryHackMe Challenge Rooms]
+---
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size">Click <a href="https://tryhackme.com/r/room/boogeyman2">here</a> to enter the challenge room on Try Hack Me</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":1,"style":{"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}},"fontSize":"large"} -->
+<h1 class="wp-block-heading has-text-color has-link-color has-large-font-size" style="color:#74103e">Artefacts</h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"fontSize":"small"} -->
+<p class="has-small-font-size">For the investigation, we will receive the following items:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list {"fontSize":"small"} -->
+<ul class="wp-block-list has-small-font-size"><!-- wp:list-item -->
+<li>A copy of the phishing email.</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>A memory dump of the victim's workstation.</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list -->
+
+<!-- wp:heading {"level":1,"style":{"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}},"fontSize":"large"} -->
+<h1 class="wp-block-heading has-text-color has-link-color has-large-font-size" style="color:#74103e">Tools</h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><a href="https://github.com/volatilityfoundation/volatility3">$ volatility_3</a>: An open-source framework for extracting data from RAM samples.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size"><strong>NOTE</strong>: It may take a few minutes to process the memory dump and run plugins. For details, refer to the $ volatility 3 <a href="https://volatility3.readthedocs.io/en/latest/volatility3.plugins.html">documentation</a>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ vol -f memorydump.raw &lt;plugin&gt;</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size">Olevba: A tool for analyzing and extracting VBA macros from Microsoft Office documents, part of the <a href="https://github.com/decalage2/oletools">Oletools suite</a>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ olevba document.doc</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":1,"style":{"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}},"fontSize":"large"} -->
+<h1 class="wp-block-heading has-text-color has-link-color has-large-font-size" style="color:#74103e">Spear Phishing Human Resources</h1>
+<!-- /wp:heading -->
+
+<!-- wp:heading {"style":{"typography":{"fontSize":"1.5rem"},"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}}} -->
+<h2 class="wp-block-heading has-text-color has-link-color" style="color:#74103e;font-size:1.5rem">The Boogeyman is back!</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size">Maxine, an HR Specialist at Quick Logistics LLC, received an application for an open position. Unbeknownst to her, the attached resume was malicious and compromised her workstation.<br><br>The security team identified suspicious commands executed on Maxine's workstation, prompting an investigation. You are tasked with analyzing and assessing the impact of the compromise.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"style":{"typography":{"fontSize":"1.5rem"},"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}}} -->
+<h2 class="wp-block-heading has-text-color has-link-color" style="color:#74103e;font-size:1.5rem">Task</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline">What email was used to send the phishing email?</span></strong><br>The email address is in the header.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What is the email of the victim employee?</strong></span></strong><br>The receiving address is also in the header.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What is the name of the attached malicious document?</strong></span></strong><br>The attachment name is located at the bottom of the email.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3317,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-294.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-294.png?w=975" alt="" class="wp-image-3317" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><span style="text-decoration: underline"><strong><strong>What is the MD5 hash of the malicious attachment?</strong></strong></span><br>First, save the file to the local machine without opening it. Next, use the md5sum command to obtain the MD5 hash value of the file.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ md5sum &lt;attachment&gt;</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3318,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-295.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-295.png?w=975" alt="" class="wp-image-3318" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What URL is used to download the stage 2 payload based on the document's macro?</strong></span></strong><br>Since the question references the document's macro, use Olevba to identify its VBA macro functionality.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ olevba &lt;attachment&gt;</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size"><strong>NOTE</strong>: VBA macros are automated scripts written in Visual Basic for Applications that enable users to perform repetitive tasks and manipulate data in Microsoft Office applications.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size">After reviewing the output, I found the file path retrieved by the macro through an HTTP GET request.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3320,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-296.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-296.png?w=1024" alt="" class="wp-image-3320" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What is the name of the process that executed the newly downloaded stage 2 payload?</strong></span></strong><br>Continuing to examine the script, we can identify the command that executes the malicious file, including the process name.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3321,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-297.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-297.png?w=975" alt="" class="wp-image-3321" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What is the full file path of the malicious stage 2 payload?</strong></span></strong><br>The full file path is also in the previous screenshot.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What is the PID of the process that executed the stage 2 payload?</strong></span></strong><br>To identify the process ID (PID), use $ volatility with the pstree plugin on the memory dump of the affected machine. Since we already know which process ran the payload, we can use grep to search for specific keywords.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ vol -f &lt;memdump.raw&gt; windows.pstree | grep -e 'process'</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3323,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-298.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-298.png?w=975" alt="" class="wp-image-3323" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What is the parent PID of the process that executed the stage 2 payload?</strong></span></strong><br>The parent process ID (PPID) after the process ID (PID), can also be found in the previous screenshot.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What URL is used to download the malicious binary executed by the stage 2 payload?</strong></span></strong><br>Since the stage 2 payload (update.js) downloads and executes the malicious binary, we should examine its source code. To do this, we first need to retrieve the file by locating its offset address in the memory dump. We will use the filescan plugin along with grep to find the offset address.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ vol -f &lt;memdump.raw&gt; windows.filescan | grep -e 'update'</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3325,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-299.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-299.png?w=1024" alt="" class="wp-image-3325" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size">Once we have the offset address, we can use the dumpfiles plugin to extract the file.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ vol -f &lt;memdump.raw&gt; windows.dumpfiles --virtaddr 0xe58f836edc60</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size">After retrieving the file, open it using nano or any text editor. The screenshot of the content reveals the URL hosting the malicious binary (updater.exe).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ nano file.dat</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3326,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-300.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-300.png?w=975" alt="" class="wp-image-3326" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What is the PID of the malicious process used to establish the C2 connection?</strong></span></strong><br>To monitor the network connection, use the netscan plugin along with the grep command to search for the malicious binary.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ vol -f &lt;memdump.raw&gt; windows.netscan | grep -e 'updater.exe'</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3329,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-301.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-301.png?w=1024" alt="" class="wp-image-3329" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size">Or we can use pstree plugin along with grep command to search for the malicious binary.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ vol -f &lt;memdump.raw&gt; windows.pstree | grep -e 'updater.exe'</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3330,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-302.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-302.png?w=975" alt="" class="wp-image-3330" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What is the full file path of the malicious process used to establish the C2 connection?</strong></span></strong><br>We can use the filescan plugin along with the grep command to learn the file path.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ vol -f &lt;memdump.raw&gt; windows.filescan | grep -e 'update'</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3331,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-303.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-303.png?w=975" alt="" class="wp-image-3331" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What is the IP address and port of the C2 connection initiated by the malicious binary? (Format: IP address:port)</strong></span></strong><br>The IP address and port number can be found using the `netscan` plugin, as shown in the screenshot before the last two.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ vol -f &lt;memdump.raw&gt; windows.netscan | grep -e 'updater.exe'</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>What is the full file path of the malicious email attachment based on the memory dump?</strong></span></strong><br>Since we already have the file name, we can use the filescan plugin along with the grep command to learn the file path.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-tertiary-background-color has-background has-small-font-size"><kbd>$ vol -f &lt;memdump.raw&gt; windows.filescan | grep -e 'Resume'</kbd></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3333,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-304.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-304.png?w=975" alt="" class="wp-image-3333" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
+<p class="has-text-align-justify has-small-font-size"><strong><span style="text-decoration: underline"><strong>The attacker implanted a scheduled task right after establishing the c2 callback. What is the full command used by the attacker to maintain persistent access?</strong></span></strong><br>Since the question references the scheduled task, we can examine the memory dump file directory using the strings command along with grep to search for the keyword "schtasks".</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size"><strong>NOTE</strong>: schtasks is a command-line tool in Windows that allows users to create, delete, configure, or display scheduled tasks to automate running programs or scripts at specified times or events.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":3334,"sizeSlug":"large","linkDestination":"media"} -->
+<figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-305.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-305.png?w=975" alt="" class="wp-image-3334" /></a></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
+<p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size"><strong>NOTE</strong>: The PowerShell script creates a scheduled task (Updater) that runs daily at 9:00 AM. It decodes and executes a base64-encoded string retrieved from the Windows registry, specifically from a key associated with the current user's settings.</p>
+<!-- /wp:paragraph -->
