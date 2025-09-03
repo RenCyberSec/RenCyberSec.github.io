@@ -1,14 +1,15 @@
 ---
 layout: post
-title: Phishing Challenge - Snapped Phish-ing Line
+title: Phishing - Snapped Phish-ing Line
+subtitle: Phishing Email, malicious attachment inspection
 date: 2024-10-05 00:02
-author: yurenjoeysie
+author: Ren Sie
 comments: true
-categories: [Email, Linux, Linux Forensics, Malware Analysis, Phishing, TryHackMe Challenge Rooms, VirusTotal]
+category: threat-hunting
 ---
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size">Click <a href="https://tryhackme.com/r/room/snappedphishingline">here</a> to enter the challenge room on Try Hack Me</p>
-<!-- /wp:paragraph -->
+
+{: .box-success}
+ Refer to [Snapped Phish-ing Line](https://tryhackme.com/r/room/snappedphishingline) for the challenge room on TryHackMe
 
 <!-- wp:heading {"level":1,"style":{"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}},"fontSize":"large"} -->
 <h1 class="wp-block-heading has-text-color has-link-color has-large-font-size" style="color:#74103e">Scenario</h1>
@@ -76,9 +77,8 @@ categories: [Email, Linux, Linux Forensics, Malware Analysis, Phishing, TryHackM
 <p class="has-text-align-justify has-small-font-size">Once we view the source code with the text editor, we know the redirect URL.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
-<p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size"><strong>NOTE</strong>: When a user visits the .html, they will be instantly redirected to the specified URL with the provided email and error parameters</p>
-<!-- /wp:paragraph -->
+{: .box-note}
+**Note:** When a user visits the .html, they will be instantly redirected to the specified URL with the provided email and error parameters
 
 <!-- wp:image {"id":2815,"sizeSlug":"large","linkDestination":"media"} -->
 <figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-82.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-82.png?w=975" alt="" class="wp-image-2815" /></a></figure>
@@ -100,9 +100,8 @@ categories: [Email, Linux, Linux Forensics, Malware Analysis, Phishing, TryHackM
 <p class="has-text-align-justify has-small-font-size">Based on the previous screenshot, it points to a file named "office365." I removed a couple of directories from the URL, so we will now navigate to the "data" directory instead of downloading the file. </p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
-<p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size"><strong>NOTE</strong>: Ensure to use http instead https in the URL.</p>
-<!-- /wp:paragraph -->
+{: .box-note}
+**Note:** Ensure to use http instead https in the URL.
 
 <!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
 <p class="has-tertiary-background-color has-background has-small-font-size"><kbd>hxxp[://]kennaroads[.]buzz/data/</kbd></p>
@@ -140,9 +139,8 @@ categories: [Email, Linux, Linux Forensics, Malware Analysis, Phishing, TryHackM
 <p class="has-text-align-justify has-small-font-size"><strong>When was the SSL certificate the phishing domain used to host the phishing kit archive first logged?</strong><br>To learn about the SSL certificate for the domain, we can search for it on <a href="https://crt.sh/?q=kennaroads.buzz">crt.sh</a>. After performing the search, we will receive a list of the SSL certificate history for the domain, including the first certificate.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
-<p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size"><strong>NOTE</strong>: crt.sh allows users to search and view details of SSL/TLS certificates from Certificate Transparency logs.</p>
-<!-- /wp:paragraph -->
+{: .box-note}
+**Note:** crt.sh allows users to search and view details of SSL/TLS certificates from Certificate Transparency logs.
 
 <!-- wp:image {"id":2823,"sizeSlug":"large","linkDestination":"media"} -->
 <figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-87.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-87.png?w=975" alt="" class="wp-image-2823" /></a></figure>
@@ -219,3 +217,4 @@ categories: [Email, Linux, Linux Forensics, Malware Analysis, Phishing, TryHackM
 <!-- wp:image {"id":2833,"sizeSlug":"large","linkDestination":"media"} -->
 <figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-95.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-95.png?w=975" alt="" class="wp-image-2833" /></a></figure>
 <!-- /wp:image -->
+
