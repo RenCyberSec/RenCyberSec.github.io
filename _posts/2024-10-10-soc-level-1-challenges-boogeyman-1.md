@@ -1,14 +1,14 @@
 ---
 layout: post
-title: SOC Level 1 Challenges – Boogeyman 1
+title: Boogeyman 1
+subtitle:  Phishing Email, attachment, compromised enpoint machine Investigation
 date: 2024-10-10 11:10
-author: yurenjoeysie
+author: Ren Sie
 comments: true
-categories: [Command and Control, CyberChef, Endpoint, Endpoint Monitoring, Endpoint Security, Event ID, Incident Response, Indicators of Compromise, Linux, Linux Forensics, Network Forensics, Network Security, Phishing, PhishTool, PowerShell, Python, Threat Intelligence, Traffic Analysis, TryHackMe Challenge Rooms, TShark, VirusTotal, Windows Event Logs, Wireshark]
 ---
-<!-- wp:paragraph {"backgroundColor":"tertiary","fontSize":"small"} -->
-<p class="has-tertiary-background-color has-background has-small-font-size">Click <a href="https://tryhackme.com/r/room/boogeyman1">here</a> to enter the challenge room on Try Hack Me</p>
-<!-- /wp:paragraph -->
+
+{: .box-success}
+ Refer to [Boogeyman1](https://tryhackme.com/room/boogeyman1) for the challenge room on TryHackMe
 
 <!-- wp:heading {"level":1,"style":{"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}},"fontSize":"large"} -->
 <h1 class="wp-block-heading has-text-color has-link-color has-large-font-size" style="color:#74103e">Artefacts</h1>
@@ -66,12 +66,8 @@ categories: [Command and Control, CyberChef, Endpoint, Endpoint Monitoring, Endp
 <h1 class="wp-block-heading has-text-color has-link-color has-large-font-size" style="color:#74103e">[Email Analysis] Look at that headers!</h1>
 <!-- /wp:heading -->
 
-<!-- wp:heading {"style":{"typography":{"fontSize":"1.5rem"},"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}}} -->
-<h2 class="wp-block-heading has-text-color has-link-color" style="color:#74103e;font-size:1.5rem">Scenario</h2>
-<!-- /wp:heading -->
-
 <!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
-<p class="has-text-align-justify has-small-font-size">Julianne, a finance employee at Quick Logistics LLC, received a follow-up email about an unpaid invoice from their business partner, B Packaging Inc. Unbeknownst to her, the attached document was malicious and compromised her workstation.<br><br>The security team flagged the suspicious execution of the attachment, alongside phishing reports from other finance department employees, indicating a targeted attack on the finance team. Recent trends show that the initial TTP used for the malicious attachment is linked to a new threat group called Boogeyman, known for targeting the logistics sector.</p>
+<p class="has-text-align-justify has-small-font-size">Julianne, a finance employee at Quick Logistics LLC, received a follow-up email about an unpaid invoice from their business partner, B Packaging Inc. Unbeknownst to her, the attached document was malicious and compromised her workstation.<br>The security team flagged the suspicious execution of the attachment, alongside phishing reports from other finance department employees, indicating a targeted attack on the finance team. Recent trends show that the initial TTP used for the malicious attachment is linked to a new threat group called Boogeyman, known for targeting the logistics sector.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"style":{"typography":{"fontSize":"1.5rem"},"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}}} -->
@@ -159,11 +155,7 @@ categories: [Command and Control, CyberChef, Endpoint, Endpoint Monitoring, Endp
 <!-- /wp:image -->
 
 <!-- wp:heading {"level":1,"style":{"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}},"fontSize":"large"} -->
-<h1 class="wp-block-heading has-text-color has-link-color has-large-font-size" style="color:#74103e">[Endpoint Security] Are you sure that’s an invoice?</h1>
-<!-- /wp:heading -->
-
-<!-- wp:heading {"style":{"typography":{"fontSize":"1.5rem"},"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}}} -->
-<h2 class="wp-block-heading has-text-color has-link-color" style="color:#74103e;font-size:1.5rem">Scenario</h2>
+<h1 class="wp-block-heading has-text-color has-link-color has-large-font-size" style="color:#74103e">Endpoint Security</h1>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
@@ -327,11 +319,7 @@ categories: [Command and Control, CyberChef, Endpoint, Endpoint Monitoring, Endp
 <!-- /wp:image -->
 
 <!-- wp:heading {"level":1,"style":{"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}},"fontSize":"large"} -->
-<h1 class="wp-block-heading has-text-color has-link-color has-large-font-size" style="color:#74103e">[Network Traffic Analysis] They got us. Call the bank immediately!</h1>
-<!-- /wp:heading -->
-
-<!-- wp:heading {"style":{"typography":{"fontSize":"1.5rem"},"color":{"text":"#74103e"},"elements":{"link":{"color":{"text":"#74103e"}}}}} -->
-<h2 class="wp-block-heading has-text-color has-link-color" style="color:#74103e;font-size:1.5rem">Scenario</h2>
+<h1 class="wp-block-heading has-text-color has-link-color has-large-font-size" style="color:#74103e">Network Traffic Analysis</h1>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"fontSize":"small"} -->
@@ -521,3 +509,4 @@ categories: [Command and Control, CyberChef, Endpoint, Endpoint Monitoring, Endp
 <!-- wp:image {"id":3308,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-293.png?w=1024" alt="" class="wp-image-3308" /></figure>
 <!-- /wp:image -->
+
