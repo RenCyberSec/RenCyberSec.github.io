@@ -3,7 +3,8 @@ layout: page
 subtitle: A collection of categorized posts
 ---
 
-### Threat Hunting / Endpoint Investigation
+<details markdown="1">
+<summary><strong>▼ Threat Hunting / Endpoint Investigation</strong></summary>
 
 {% assign threat_posts = site.posts | where: "category", "threat-hunting" %}
 {% for post in threat_posts %}
