@@ -145,3 +145,4 @@ category: threat-hunting
 <p class="has-text-align-justify has-small-font-size"><strong>What is the actual file extension of the attachment?</strong><br>The file extension is displayed in the previous screenshot.</p>
 <!-- /wp:paragraph -->
 
+
