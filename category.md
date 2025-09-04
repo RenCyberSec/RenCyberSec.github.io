@@ -13,6 +13,18 @@ layout: page
 </details>
 ---
 
+<details markdown="1">
+<summary><strong> Digital Forensics</strong></summary>
+
+{% assign threat_posts = site.posts | where: "category", "digital-forensics" %}
+{% for post in threat_posts %}
+- **{{ post.date | date: "%b %d, %Y" }}** - [{{ post.title }}]({{ post.url }})
+{% endfor %}
+
+</details>
+---
+
+
 ### Malware Analysis
 
 {% assign malware_posts = site.posts | where: "category", "malware-analysis" %}
