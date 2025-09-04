@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Wazuh - Monday Monitor
-Subtitle: Discovered persistent threat on compromised endpoint with EDR (Wazuh)
+subtitle: Discovered persistent threat on compromised endpoint with EDR (Wazuh)
 date: 2024-09-29 17:41
 author: Ren Sie
 comments: true
@@ -128,4 +128,5 @@ category: threat-hunting
 <!-- wp:image {"id":2287,"sizeSlug":"large","linkDestination":"media"} -->
 <figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-836.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-836.png?w=945" alt="" class="wp-image-2287" /></a></figure>
 <!-- /wp:image -->
+
 
