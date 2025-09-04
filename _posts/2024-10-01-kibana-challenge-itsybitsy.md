@@ -1,14 +1,15 @@
 ---
 layout: post
-title: Kibana Challenge - ItsyBitsy
+title: Kibana - ItsyBitsy
+subtitle: Tracing logs for suspicious activities on Kibana
 date: 2024-10-01 18:38
-author: yurenjoeysie
+author: Ren Sie
 comments: true
-categories: [Command and Control, IDS, Incident Response, Indicators of Compromise, Kibana, logs, Pastebin, SIEM, TryHackMe Challenge Rooms, Windows Event Logs, Windows Forensic, Windows System]
+category: threat-hunting
 ---
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size">Click <a href="https://tryhackme.com/r/room/itsybitsy">here</a> to enter the challenge room on Try Hack Me</p>
-<!-- /wp:paragraph -->
+
+{: .box-success}
+ Refer to [ItsyBitsy](https://tryhackme.com/r/room/itsybitsy) for the challenge room on TryHackMe
 
 <!-- wp:heading {"level":1,"fontSize":"large"} -->
 <h1 class="wp-block-heading has-large-font-size">Scenario</h1>
@@ -54,9 +55,8 @@ categories: [Command and Control, IDS, Incident Response, Indicators of Compromi
 <figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-29-30.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/10/image-29-30.png?w=1024" alt="" class="wp-image-2574" /></a></figure>
 <!-- /wp:image -->
 
-<!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
-<p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size">NOTE: <strong>Pastebin</strong> is used for sharing snippets of code, configuration files, or other text.</p>
-<!-- /wp:paragraph -->
+{: .box-note}
+**Note:** Pastebin is used for sharing snippets of code, configuration files, or other text.
 
 <!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
 <p class="has-text-align-justify has-small-font-size"><strong>The user’s machine used a legit windows binary to download a file from the C2 server. What is the name of the binary?</strong><br>Refer to the previous screenshot for the user agent used to retrieve the file from the suspicious IP address identified earlier.</p>
@@ -81,3 +81,4 @@ categories: [Command and Control, IDS, Incident Response, Indicators of Compromi
 <!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
 <p class="has-text-align-justify has-small-font-size"><strong>The file contains a secret code with the format THM{_____}.</strong><br>The flag was mentioned in the previous question as well.</p>
 <!-- /wp:paragraph -->
+
