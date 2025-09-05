@@ -1,14 +1,15 @@
 ---
 layout: post
 title: TShark Challenge - Teamwork
+subtitle: Inspect engress suspicious traffic to the malicious domain with TShark
 date: 2024-09-24 00:11
-author: yurenjoeysie
+author: Ren Sie
 comments: true
-categories: [Network Security, Packet Sniffer, Traffic Analysis, TryHackMe Challenge Rooms, TShark]
+category: network-traffic-inspection
 ---
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size">Click <a href="https://tryhackme.com/r/room/tsharkchallengesone">here</a> to enter the challenge room on Try Hack Me</p>
-<!-- /wp:paragraph -->
+
+{: .box-success}
+ Refer to [Teamwork](https://tryhackme.com/r/room/tsharkchallengesone) for the challenge room on TryHackMe
 
 <!-- wp:heading {"level":1,"fontSize":"large"} -->
 <h1 class="wp-block-heading has-large-font-size">Scenario</h1>
@@ -98,9 +99,8 @@ categories: [Network Security, Packet Sniffer, Traffic Analysis, TryHackMe Chall
 <p class="has-text-align-justify has-small-font-size">Since we already know the domain name and the question is asking for the IP address, we will use <code>dns.a</code> and <code>dns.qry.name</code> to retrieve the information.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
-<p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size">-e dns.a: Extracts IPv4 addresses returned in DNS responses.<br>-e dns.qry.name: Extracts domain names that were queried in DNS requests.</p>
-<!-- /wp:paragraph -->
+{: .box-note}
+**Note:** -e dns.a: Extracts IPv4 addresses returned in DNS responses.<br>-e dns.qry.name: Extracts domain names that were queried in DNS requests.
 
 <!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
 <p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size"><kbd>$ tshark -r teamwork.pcap -T fields -e dns.a -e dns.qry.name | awk NF | sort | uniq | grep -i 'paypal'</kbd></p>
@@ -137,3 +137,4 @@ categories: [Network Security, Packet Sniffer, Traffic Analysis, TryHackMe Chall
 <!-- wp:image {"id":1611,"sizeSlug":"large","linkDestination":"media"} -->
 <figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-570.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-570.png?w=1024" alt="" class="wp-image-1611" /></a></figure>
 <!-- /wp:image -->
+
