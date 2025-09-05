@@ -1,6 +1,7 @@
 ---
 layout: post
-title: Windows forensics Challenge - Unattended
+title: Windows forensics - Unattended
+subtitle: Inspect a compromised Windows machine's activities with Registry Explorer and Autopsy
 date: 2024-09-25 21:59
 author: Ren Sie
 comments: true
@@ -180,4 +181,5 @@ category: digital-forensics
 <!-- wp:image {"id":1990,"sizeSlug":"large","linkDestination":"media"} -->
 <figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-700.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-700.png?w=1004" alt="" class="wp-image-1990" /></a></figure>
 <!-- /wp:image -->
+
 
