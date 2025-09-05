@@ -1,6 +1,6 @@
 ---
 layout: post
-title: TShark Challenge - Teamwork
+title: TShark - Teamwork
 subtitle: Inspect engress suspicious traffic to the malicious domain with TShark
 date: 2024-09-24 00:11
 author: Ren Sie
@@ -137,4 +137,5 @@ category: network-traffic-inspection
 <!-- wp:image {"id":1611,"sizeSlug":"large","linkDestination":"media"} -->
 <figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-570.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-570.png?w=1024" alt="" class="wp-image-1611" /></a></figure>
 <!-- /wp:image -->
+
 
