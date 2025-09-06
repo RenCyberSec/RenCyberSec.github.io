@@ -1,11 +1,16 @@
 ---
 layout: post
 title: Threat Intelligence - Friday Overtime
+subtitle: Trace the malicious DLL (pRsm.dll) back to its associated malware, APT group, and TTPs using Google Search, VirusTotal, and the MITRE ATT&CK framework.
 date: 2024-09-20 12:52
-author: yurenjoeysie
+author: Ren Sie
 comments: true
-categories: [Cyber Threat Intelligence, CyberChef, Incident Response, Indicators of Compromise, Threat Intelligence, TryHackMe Challenge Rooms, VirusTotal]
+category: threat-intelligence
 ---
+
+{: .box-success}
+ Refer to [Friday Overtime](https://tryhackme.com/r/room/fridayovertime) for the challenge room on TryHackMe
+
 <!-- wp:heading {"level":1,"fontSize":"large"} -->
 <h1 class="wp-block-heading has-large-font-size">Scenario</h1>
 <!-- /wp:heading -->
@@ -54,9 +59,8 @@ categories: [Cyber Threat Intelligence, CyberChef, Incident Response, Indicators
 <p class="has-text-align-justify has-small-font-size">In the same email, there is a malware sample file named samples.zip. To access the file pRsm[.]dll inside samples.zip, use the unzip command to extract its contents.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"align":"justify","backgroundColor":"tertiary","fontSize":"small"} -->
-<p class="has-text-align-justify has-tertiary-background-color has-background has-small-font-size">Note: This file is password-protected with the password (Panda321!), which is provided in the email.</p>
-<!-- /wp:paragraph -->
+{: .box-note}
+**Note:** This file is password-protected with the password (Panda321!), which is provided in the email.
 
 <!-- wp:image {"id":1091,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-355.png?w=1024" alt="" class="wp-image-1091" /></figure>
@@ -161,3 +165,4 @@ categories: [Cyber Threat Intelligence, CyberChef, Incident Response, Indicators
 <!-- wp:paragraph -->
 <p></p>
 <!-- /wp:paragraph -->
+
