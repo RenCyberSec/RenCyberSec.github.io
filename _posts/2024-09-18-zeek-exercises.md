@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Zeek - Network Packet Inspection
+title: Zeek
 subtitle: Inspect network traffic in three real-life incident cases: Suspicious DNS Query, Phishing Campaign, and Log4j with Zeek.
 date: 2024-09-18 20:32
 author: Ren Sie
@@ -371,4 +371,5 @@ category: network-traffic-inspection
 <!-- wp:image {"id":1036,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-333.png?w=886" alt="" class="wp-image-1036" /></figure>
 <!-- /wp:image -->
+
 
