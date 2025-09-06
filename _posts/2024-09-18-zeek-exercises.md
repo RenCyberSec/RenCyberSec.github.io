@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Zeek
-subtitle: Inspect network traffic in three real-life incident cases: Suspicious DNS Query, Phishing Campaign, and Log4j with Zeek.
+title: Zeek - Packet inspection
+subtitle: Inspect network traffic in three real-life incident cases (Suspicious DNS Query, Phishing Campaign, and Log4j) with Zeek.
 date: 2024-09-18 20:32
 author: Ren Sie
 comments: true
