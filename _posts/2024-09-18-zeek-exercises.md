@@ -1,11 +1,16 @@
 ---
 layout: post
-title: Zeek Exercises
+title: Zeek - Network Packet Inspection
+subtitle: Inspect network traffic in three real-life incident cases: Suspicious DNS Query, Phishing Campaign, and Log4j with Zeek.
 date: 2024-09-18 20:32
-author: yurenjoeysie
+author: Ren Sie
 comments: true
-categories: [Network Security, SIEM, Traffic Analysis, TryHackMe Challenge Rooms, Zeek]
+category: network-traffic-inspection
 ---
+
+{: .box-success}
+ Refer to [Zeek Exercises](https://tryhackme.com/r/room/zeekbroexercises) for the challenge room on TryHackMe
+
 <!-- wp:heading {"level":1,"fontSize":"large"} -->
 <h1 class="wp-block-heading has-large-font-size">Case #1 - Anomalous DNS </h1>
 <!-- /wp:heading -->
@@ -143,8 +148,11 @@ categories: [Network Security, SIEM, Traffic Analysis, TryHackMe Challenge Rooms
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"align":"justify","fontSize":"small"} -->
-<p class="has-text-align-justify has-small-font-size">By examining the conn.log, we can identify which IP addresses appear most frequently in the sender field.<br>note: The more frequently an IP address appears in the sender field, the more likely it is to be associated with spam or phishing activities.</p>
+<p class="has-text-align-justify has-small-font-size">By examining the conn.log, we can identify which IP addresses appear most frequently in the sender field.</p>
 <!-- /wp:paragraph -->
+
+{: .box-note}
+**Note:** The more frequently an IP address appears in the sender field, the more likely it is to be associated with spam or phishing activities.
 
 <!-- wp:image {"id":1041,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-334.png?w=886" alt="" class="wp-image-1041" /></figure>
@@ -363,3 +371,4 @@ categories: [Network Security, SIEM, Traffic Analysis, TryHackMe Challenge Rooms
 <!-- wp:image {"id":1036,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-333.png?w=886" alt="" class="wp-image-1036" /></figure>
 <!-- /wp:image -->
+
