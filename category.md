@@ -1,7 +1,7 @@
 ---
 layout: page
 ---
-
+### Blue Team
 <details markdown="1">
 <summary><strong> Threat Hunting / Endpoint Investigation</strong></summary>
 
