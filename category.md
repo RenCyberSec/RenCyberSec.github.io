@@ -47,10 +47,13 @@ title: Post
 </details>
 ---
 
+<details markdown="1">
+<summary><strong> Malware Analysis </strong></summary>
 
-### Malware Analysis
-
-{% assign malware_posts = site.posts | where: "category", "malware-analysis" %}
-{% for post in malware_posts %}
+{% assign threat_posts = site.posts | where: "category", "malware-analysis" %}
+{% for post in threat_posts %}
 - **{{ post.date | date: "%b %d, %Y" }}** - [{{ post.title }}]({{ post.url }})
 {% endfor %}
+
+</details>
+---
