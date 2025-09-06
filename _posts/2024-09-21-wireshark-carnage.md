@@ -7,9 +7,9 @@ author: Ren Sie
 comments: true
 category: network-traffic-inspection
 ---
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size">Click <a href="https://tryhackme.com/r/room/c2carnage">here</a> to enter the challenge room on Try Hack Me</p>
-<!-- /wp:paragraph -->
+
+{: .box-success}
+ Refer to [Carnage](https://tryhackme.com/room/c2carnage) for the challenge room on TryHackMe
 
 <!-- wp:heading {"style":{"typography":{"fontSize":"1.5rem"}}} -->
 <h2 class="wp-block-heading" style="font-size:1.5rem">Scenario</h2>
@@ -352,4 +352,5 @@ category: network-traffic-inspection
 <!-- wp:image {"id":1449,"sizeSlug":"large","linkDestination":"media"} -->
 <figure class="wp-block-image size-large"><a href="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-525.png"><img src="https://1earnwithren.wordpress.com/wp-content/uploads/2024/09/image-525.png?w=945" alt="" class="wp-image-1449" /></a></figure>
 <!-- /wp:image -->
+
 
