@@ -1,5 +1,6 @@
 ---
 layout: page
+title: Post
 ---
 ### Blue Team
 <details markdown="1">
