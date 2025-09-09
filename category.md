@@ -4,12 +4,79 @@ title: Post
 ---
 ### Red Team
 <details markdown="1">
-<summary><strong> Penetration Testing </strong></summary>
+<summary><strong> CTF </strong></summary>
 
 {% assign threat_posts = site.posts | where: "category", "penetration-testing" %}
 {% for post in threat_posts %}
 - **{{ post.date | date: "%b %d, %Y" }}** - [{{ post.title }}]({{ post.url }})
 {% endfor %}
+
+</details>
+---
+
+<details markdown="1">
+<summary><strong> Web Application Testing </strong></summary>
+
+  <details markdown="1">
+  <summary><strong> Injection </strong></summary>
+  
+  {% assign threat_posts = site.posts | where: "category", "Injection" %}
+  {% for post in threat_posts %}
+  - **{{ post.date | date: "%b %d, %Y" }}** - [{{ post.title }}]({{ post.url }})
+  {% endfor %}
+  
+  </details>
+
+  <details markdown="1">
+  <summary><strong> Script Input </strong></summary>
+  
+  {% assign threat_posts = site.posts | where: "category", "script-input" %}
+  {% for post in threat_posts %}
+  - **{{ post.date | date: "%b %d, %Y" }}** - [{{ post.title }}]({{ post.url }})
+  {% endfor %}
+  
+  </details>
+
+  <details markdown="1">
+  <summary><strong> Request Forgery </strong></summary>
+  
+  {% assign threat_posts = site.posts | where: "category", "request-forgery" %}
+  {% for post in threat_posts %}
+  - **{{ post.date | date: "%b %d, %Y" }}** - [{{ post.title }}]({{ post.url }})
+  {% endfor %}
+  
+  </details>
+
+  <details markdown="1">
+  <summary><strong> User Interaction </strong></summary>
+  
+  {% assign threat_posts = site.posts | where: "category", "user-interaction" %}
+  {% for post in threat_posts %}
+  - **{{ post.date | date: "%b %d, %Y" }}** - [{{ post.title }}]({{ post.url }})
+  {% endfor %}
+  
+  </details>
+
+  <details markdown="1">
+  <summary><strong> Authentication Bypass </strong></summary>
+  
+  {% assign threat_posts = site.posts | where: "category", "authentication-bypass" %}
+  {% for post in threat_posts %}
+  - **{{ post.date | date: "%b %d, %Y" }}** - [{{ post.title }}]({{ post.url }})
+  {% endfor %}
+  
+  </details>
+
+  <details markdown="1">
+  <summary><strong> Web Configuration </strong></summary>
+  
+  {% assign threat_posts = site.posts | where: "category", "web-configuration" %}
+  {% for post in threat_posts %}
+  - **{{ post.date | date: "%b %d, %Y" }}** - [{{ post.title }}]({{ post.url }})
+  {% endfor %}
+  
+  </details>
+
 
 </details>
 ---
