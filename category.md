@@ -20,7 +20,7 @@ title: Post
   <details markdown="1">
   <summary><strong> Injection </strong></summary>
   
-  {% assign threat_posts = site.posts | where: "category", "Injection" %}
+  {% assign threat_posts = site.posts | where: "category", "injection" %}
   {% for post in threat_posts %}
   - **{{ post.date | date: "%b %d, %Y" }}** - [{{ post.title }}]({{ post.url }})
   {% endfor %}
