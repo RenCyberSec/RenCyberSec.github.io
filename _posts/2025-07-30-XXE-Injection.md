@@ -38,8 +38,8 @@ xml:
 
 ### Labs
 Just for demostration, I completed some labs on [PortSwigger Academy](https://portswigger.net/web-security/all-labs#xml-external-entity-xxe-injection) to show how this vulnerability can lead to:
-1. Exploiting XXE using external entities to retrieve files
-   I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!DOCTYPE element` that defines an external entity containing the path to the file `etc/passwd`.
+#### Exploiting XXE using external entities to retrieve files  
+I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!DOCTYPE element` that defines an external entity containing the path to the file `etc/passwd`.
    ~~~
    <?xml version="1.0" encoding="UTF-8"?>  
    <!DOCTYPE test [  
@@ -60,8 +60,8 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
    > dnsmasq:x:101:65534 :dnsmasq, ,,:/var/lib/misc:/usr/sbin/nologin  
    > messagebus:x:102:101 :: /nonexistent:/usr/sbin/nologin
    
-2. Exploiting XXE to perform SSRF attacks
-   I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!DOCTYPE element` that defines an external entity `test` to access EC2 instance metadata. More details about what _EC2 instance metadata_ is, visit [Access instance metadata for an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)
+#### Exploiting XXE to perform SSRF attacks  
+I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!DOCTYPE element` that defines an external entity `test` to access EC2 instance metadata. More details about what _EC2 instance metadata_ is, visit [Access instance metadata for an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)
    ~~~
    < ?xml version="1.0" encoding="UTF-8"?>  
    < !DOCTYPE test [  
@@ -114,7 +114,7 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
 {: .box-note}
 **Note:** 💡SSRF exploits a server's request-making functionality, allowing user to make a crafted request that pivots from the public-facing application and uses the server's trusted internal network position to scan, access, and exfiltrate data from otherwise unreachable backend services and cloud metadata endpoints.
 
-3. Exploiting XInclude to retrieve files
+#### Exploiting XInclude to retrieve files  
    I identified the server-side xml parser by studying `GET /product?productId=3` on Burp Proxy. Insert the `Xinclude namespace` and the filepath to `POST /product/stock` on Repeater.
    ~~~
    productId=<test  
