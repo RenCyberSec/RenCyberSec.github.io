@@ -40,31 +40,34 @@ xml:
 <details markdown="1">
   <summary>Click me to expand checklist</summary>  
 
-  #### Objective  
-  1. **Identify endpoints that can process XML**  
-      * Send test requests with XML payloads and set Content-Type to `application/xml` or `text/xml`.  
-      * Inspect response content: `Content-Type: application/xml` or `Content-Type: text/xml` as accepted request headers.  
+#### Objective
 
-  2. **Create a working XML payload that can be adapted to deliver exploits**  
-      * First create a valid XML structure that the application accepts  
-      * Then modify it with malicious content tailored to target the application's XML processing logic  
+1. **Identify endpoints that can process XML**
+   - Send test requests with XML payloads and set Content-Type to `application/xml` or `text/xml`.
+   - Inspect response content: `Content-Type: application/xml` or `Content-Type: text/xml` as accepted request headers.
 
-  3. **Test identified endpoints for XXE**  
+2. **Create a working XML payload that can be adapted to deliver exploits**
+   - First create a valid XML structure that the application accepts.
+   - Then modify it with malicious content tailored to target the application's XML processing logic.
 
-  #### Attack surface discovery  
-  1. **Identify endpoints that accept XML payloads**  
-      * Review requests in proxy for XML data (e.g., Burp Suite)  
-      * Identify endpoints that accept JSON by sending XML  
-      * Identify endpoints that accept images by sending SVG images  
-      * Identify endpoints that accept documents by sending DOCX or PDF files  
+3. **Test identified endpoints for XXE**
 
-  2. **Test with the header Content-Type: application/xml**  
-  3. **Verify working XML payloads that can be adapted to deliver exploits**  
-      * Confirm the endpoint accepts and processes XML  
-      * Inject harmless modifications to observe behavior changes  
+#### Attack surface discovery
 
-  4. **Locate internal DTDs**  
-      * <!DOCTYPE ...> that contains `[internal subset]`, `[internal declaring elements]`, `[internal declaring entities]`, or `[attribute rules]`  
+1. **Identify endpoints that accept XML payloads**
+   - Review requests in proxy for XML data (e.g., Burp Suite).
+   - Identify endpoints that accept JSON by sending XML.
+   - Identify endpoints that accept images by sending SVG images.
+   - Identify endpoints that accept documents by sending DOCX or PDF files.
+
+2. **Test with the header Content-Type: application/xml**
+
+3. **Verify working XML payloads that can be adapted to deliver exploits**
+   - Confirm the endpoint accepts and processes XML.
+   - Inject harmless modifications to observe behavior changes.
+
+4. **Locate internal DTDs**  
+   - <!DOCTYPE ...> that contains `[internal subset]`, `[internal declaring elements]`, `[internal declaring entities]`, or `[attribute rules]`  
   
 #### Testing
 
@@ -94,7 +97,7 @@ xml:
 7. **Test for denial of service**
    - [Billion laughs](https://en.wikipedia.org/wiki/Billion_laughs_attack)
 
-8. **Test for code execution
+8. **Test for code execution**
    - Tag Injection
   
 #### Impact
