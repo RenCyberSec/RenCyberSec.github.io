@@ -6,6 +6,9 @@ date: 2025-07-30 12:43
 author: Ren Sie
 comments: true
 category: injection
+cover-img: /assets/img/Post_Cover.png
+thumbnail-img: /assets/img/githubpost/xxe_thumb.png
+share-img: /assets/img/Post_Cover.png
 ---
 The method isn’t as popular as others because of the patches. But if comes across with application that access and passing XML, worth trying!
 
