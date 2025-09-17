@@ -6,6 +6,9 @@ date: 2025-07-31 10:17
 author: Ren Sie
 comments: true
 category: injection
+cover-img: /assets/img/Post_Cover.png
+thumbnail-img: /assets/img/githubpost/ldapi_thumb.png
+share-img: /assets/img/Post_Cover.png
 ---
 LDAPi is very similar to other injection (E.g., SQLi, NoSQL, OSi). It allow attacker to bypass the authentication to retrieve user’s data or perform RCE
 
