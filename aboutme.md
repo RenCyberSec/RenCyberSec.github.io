@@ -2,6 +2,7 @@
 layout: page
 title: About Me
 subtitle: Let's talk about myself for a little bit
+cover-img: /assets/img/Post_Cover.png
 ---
 
 My name is Ren Sie. I’ve made a few commitments in my life:
@@ -17,4 +18,4 @@ My name is Ren Sie. I’ve made a few commitments in my life:
 
 I started on a transformative journey in the beginning of 2023, transitioning from a background in hotel management to technology. After graduating in 2017, I spent several years developing my skills in the hospitality industry. However, my lifelong fascination with computers, which began in childhood as I snuck late-night gaming sessions, prompted me to explore a new career path. The pivotal encouragement from my friend and the unwavering support from my life partner, helped me take this significant step just before I turned 30.
 
-[my movie](https://en.wikipedia.org/wiki/The_Princess_Bride_%28film%29)
+[my movie]
