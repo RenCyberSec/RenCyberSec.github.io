@@ -139,14 +139,14 @@ navbar-var-length: false
 
 # Personalize the colours in your website. Colour values can be any valid CSS colour
 
-page-col: "#FFF8F1"             # Warm ivory background with a sunlit feel
+#page-col: "#FFF8F1"             # Warm ivory background with a sunlit feel
 text-col: "#4B3832"             # Rich espresso brown for strong contrast but still warm
 link-col: "#D98555"             # Warm clay-orange for friendly, noticeable links
 hover-col: "#B7653A"            # Deep terracotta for hover state
-navbar-col: "#FFEFE1"           # Soft peachy beige for warmth and light
+#navbar-col: "#FFEFE1"           # Soft peachy beige for warmth and light
 navbar-text-col: "#4B3832"      # Match main text for readability
-navbar-border-col: "#E9D8CE"    # Light sand-colored border for soft structure
-footer-col: "#FFEFE1"           # Match navbar to keep it light and connected
+#navbar-border-col: "#E9D8CE"    # Light sand-colored border for soft structure
+#footer-col: "#FFEFE1"           # Match navbar to keep it light and connected
 footer-text-col: "#7B665E"      # Warm taupe for subtle but readable text
 footer-link-col: "#4B3832"      # Same as main text for consistency
 footer-hover-col: "#B7653A"     # Match link hover for a cohesive pop
