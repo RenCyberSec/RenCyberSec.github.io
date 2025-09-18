@@ -679,7 +679,7 @@ footer .footer-custom-content {
   background-size: cover;
   -o-background-size: cover;
   height: 300px; /* New height for the intro header */
-  margin-top: 0rem;  /* Adjust top margin for a smaller header */
+  margin-top: 2rem;  /* Adjust top margin for a smaller header */
   margin-bottom: 2rem; /* Adjust bottom margin to reduce space below */
 
 }
@@ -708,7 +708,7 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
 }
 .intro-header.big-img .page-heading,
 .intro-header.big-img .post-heading {
-  padding: 2rem 0;
+  padding: 2.5rem 0;
   color: #FFF;
   text-shadow: 1px 1px 3px #000;
 }
@@ -760,7 +760,7 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
     margin-top: 8.125rem;
   }
   .intro-header.big-img {
-    margin-top: 0rem; /* Full navbar is small navbar + 20px padding on each side when expanded */
+    margin-top: 2.5rem; /* Full navbar is small navbar + 20px padding on each side when expanded */
   }
   .intro-header.big-img .page-heading,
   .intro-header.big-img .post-heading {
