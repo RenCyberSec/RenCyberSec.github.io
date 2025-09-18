@@ -6,7 +6,6 @@ date: 2025-07-31 09:43
 author: Ren Sie
 comments: true
 category: injection
-cover-img: /assets/img/Post_Cover.png
 thumbnail-img: /assets/img/githubpost/Commandi_thumb.png
 share-img: /assets/img/Post_Cover.png
 ---
