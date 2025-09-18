@@ -6,7 +6,6 @@ date: 2025-07-30 09:59
 author: Ren Sie
 comments: true
 category: injection
-cover-img: /assets/img/Post_Cover.png
 thumbnail-img: /assets/img/githubpost/Insecure_deserialization._thumb.png
 share-img: /assets/img/Post_Cover.png
 ---
