@@ -669,7 +669,7 @@ footer .footer-custom-content {
 /* --- Post and page headers --- */
 
 .intro-header {
-  margin: 2.5rem 0 1.25rem;
+  margin: 3.5rem 0 1.25rem;
   position: relative;
 }
 .intro-header.big-img {
@@ -708,7 +708,7 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
 }
 .intro-header.big-img .page-heading,
 .intro-header.big-img .post-heading {
-  padding: 6.25rem 0;
+  padding: 3.25rem 0;
   color: #FFF;
   text-shadow: 1px 1px 3px #000;
 }
