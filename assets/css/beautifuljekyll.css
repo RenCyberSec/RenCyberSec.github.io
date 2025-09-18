@@ -476,7 +476,7 @@ footer .footer-custom-content {
   }
 }
 
-/* --- Post preview (feed) --- */
+/* ---  preview (feed) --- */
 
 .posts-list {
     margin: 0;
@@ -669,7 +669,7 @@ footer .footer-custom-content {
 /* --- Post and page headers --- */
 
 .intro-header {
-  margin: 2rem 0 1.25rem;
+  margin: 3rem 0 1.25rem;
   position: relative;
 }
 .intro-header.big-img {
@@ -678,8 +678,8 @@ footer .footer-custom-content {
   -moz-background-size: cover;
   background-size: cover;
   -o-background-size: cover;
-  height: 300px; /* New height for the intro header */
-  margin-top: 2rem;  /* Adjust top margin for a smaller header */
+  height: 350px; /* New height for the intro header */
+  margin-top: 1.5rem;  /* Adjust top margin for a smaller header */
   margin-bottom: 2rem; /* Adjust bottom margin to reduce space below */
 
 }
@@ -708,7 +708,7 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
 }
 .intro-header.big-img .page-heading,
 .intro-header.big-img .post-heading {
-  padding: 2.5rem 0;
+  padding: 3rem 0;
   color: #FFF;
   text-shadow: 1px 1px 3px #000;
 }
@@ -757,14 +757,14 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
 }
 @media (min-width: 1200px) {
   .intro-header {
-    margin-top: 8.125rem;
+    margin-top: 5rem;
   }
   .intro-header.big-img {
-    margin-top: 2.5rem; /* Full navbar is small navbar + 20px padding on each side when expanded */
+    margin-top: 1.5rem; /* Full navbar is small navbar + 20px padding on each side when expanded */
   }
   .intro-header.big-img .page-heading,
   .intro-header.big-img .post-heading {
-    padding: 4rem 0;
+    padding: 5rem 0;
   }
   .intro-header .page-heading h1 {
     font-size: 5rem;
