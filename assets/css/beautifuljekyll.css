@@ -669,7 +669,7 @@ footer .footer-custom-content {
 /* --- Post and page headers --- */
 
 .intro-header {
-  margin: 4rem 0 2.5rem;
+  margin: 2rem 0 1.25rem;
   position: relative;
 }
 .intro-header.big-img {
@@ -679,8 +679,8 @@ footer .footer-custom-content {
   background-size: cover;
   -o-background-size: cover;
   height: 300px; /* New height for the intro header */
-  margin-top: 3.5rem;  /* Adjust top margin for a smaller header */
-  margin-bottom: 3rem; /* Adjust bottom margin to reduce space below */
+  margin-top: 0rem;  /* Adjust top margin for a smaller header */
+  margin-bottom: 2rem; /* Adjust bottom margin to reduce space below */
 
 }
 nav.top-nav-short-permanent ~ header > .intro-header {
@@ -708,7 +708,7 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
 }
 .intro-header.big-img .page-heading,
 .intro-header.big-img .post-heading {
-  padding: 4rem 0;
+  padding: 2rem 0;
   color: #FFF;
   text-shadow: 1px 1px 3px #000;
 }
@@ -747,7 +747,7 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
 .intro-header.big-img .img-desc {
   background: rgba(30, 30, 30, 0.6);
   position: absolute;
-  padding: 0.3125rem 0.625rem;
+  padding: 0.5rem 1rem;
   font-size: 0.6875rem;
   color: #EEE;
   font-family: var(--header-font);
@@ -760,11 +760,11 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
     margin-top: 8.125rem;
   }
   .intro-header.big-img {
-    margin-top: 5.6875rem; /* Full navbar is small navbar + 20px padding on each side when expanded */
+    margin-top: 0rem; /* Full navbar is small navbar + 20px padding on each side when expanded */
   }
   .intro-header.big-img .page-heading,
   .intro-header.big-img .post-heading {
-    padding: 9.375rem 0;
+    padding: 4rem 0;
   }
   .intro-header .page-heading h1 {
     font-size: 5rem;
