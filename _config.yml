@@ -140,16 +140,18 @@ navbar-var-length: false
 # Personalize the colours in your website. Colour values can be any valid CSS colour
 
 page-col: "#FFF8F1"             # Warm ivory background with a sunlit feel
-text-col: "#4B3832"             # Rich espresso brown for strong contrast but still warm
-link-col: "#D98555"             # Warm clay-orange for friendly, noticeable links
-hover-col: "#B7653A"            # Deep terracotta for hover state
-navbar-col: "#FFEFE1"           # Soft peachy beige for warmth and light
-navbar-text-col: "#F0E1C6"  #/* Soft light cream */
+text-col: "#D6C8B8"             # Warm off-white for a soft, readable contrast on dark backgrounds
+link-col: "#E4A55A"             # Softer clay-orange for friendly, noticeable links
+hover-col: "#9F4D2E"            # More vibrant terracotta for hover state, stands out nicely
+navbar-col: "#FBE1C7"           # Slightly darker peachy beige to add subtle contrast and warmth
+navbar-text-col: "#D7C6A1"      # Slightly darker cream for better readability in navbar text
 navbar-border-col: "#E9D8CE"    # Light sand-colored border for soft structure
-footer-col: "#FFEFE1"           # Match navbar to keep it light and connected
-footer-text-col: "#D1B29A"  #/* Warm, muted beige */
-footer-link-col: "#F1A7B3"  #/* Soft pinkish tone */
-footer-hover-col: "#FF6F61"  #/* Vibrant coral */
+footer-col: "#FBE1C7"           # Match navbar to keep it light and connected
+footer-text-col: "#D1B29A"      # Warm, muted beige for footer text
+footer-link-col: "#F1A7B3"      # Soft pinkish tone for footer links
+footer-hover-col: "#FF6F61"     # Vibrant coral for footer link hover effect
+
+
 
 # Alternatively, the navbar, footer, and page background can be set to an image
 # instead of colour
