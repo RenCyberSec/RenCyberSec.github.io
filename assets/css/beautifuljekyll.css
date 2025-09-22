@@ -881,13 +881,13 @@ pre code {
 }
 
 pre {
-  font-size: 1rem;
+  font-size: 1.25rem;
   line-height: 1.5em;
   border-radius: 0.25rem;
   padding: 0.59375rem;
   background: #d58027;
   color: #eeeeee;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 .highlight pre {
   border: none;
@@ -1013,8 +1013,8 @@ pre {
   margin: 0 0 1.25rem;
   font-size: 1.1rem;
   border-left: 0.3125rem solid #eee;
-  color: #a147ed;      
-  background: #dadada;
+  color: #cfaced;      
+  background: #696767;
   font-style: italic; 
 }
 
