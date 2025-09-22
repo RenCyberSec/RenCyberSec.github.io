@@ -869,8 +869,8 @@ table tr td :last-child {
 
 code {
   padding: 0.125rem 0.25rem;
-  color: #c7254e;
-  background-color: #f9f2f4;
+  color: #3a7d1d;
+  background-color: #c2b68f;
   border-radius: 0.25rem;
 }
 
@@ -881,10 +881,12 @@ pre code {
 }
 
 pre {
-  font-size: 0.875rem;
+  font-size: 1rem;
   line-height: 1.5em;
   border-radius: 0.25rem;
   padding: 0.59375rem;
+  background-color: #d58027;
+  color: #eeeeee;
 }
 .highlight pre {
   border: none;
