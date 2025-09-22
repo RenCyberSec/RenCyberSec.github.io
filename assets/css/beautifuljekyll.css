@@ -869,8 +869,8 @@ table tr td :last-child {
 
 code {
   padding: 0.125rem 0.25rem;
-  color: #3a7d1d;
-  background-color: #c2b68f;
+  color: #9357cc;
+  background-color: #dadada;
   border-radius: 0.25rem;
 }
 
@@ -885,8 +885,9 @@ pre {
   line-height: 1.5em;
   border-radius: 0.25rem;
   padding: 0.59375rem;
-  background-color: #d58027;
+  background: #d58027;
   color: #eeeeee;
+  margin-bottom: 1rem;
 }
 .highlight pre {
   border: none;
@@ -1012,6 +1013,9 @@ pre {
   margin: 0 0 1.25rem;
   font-size: 1.1rem;
   border-left: 0.3125rem solid #eee;
+  color: #a147ed;      
+  background: #dadada;
+  font-style: italic; 
 }
 
 .blog-post blockquote p:last-child {
