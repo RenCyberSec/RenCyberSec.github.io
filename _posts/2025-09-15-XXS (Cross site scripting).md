@@ -71,6 +71,30 @@ User could inject the following code into a vulnerable website, causing an autom
 src=x onerror="window.location.href='<$url>'"
 ~~~
 
+#### HTML Events
+<details markdown="1">
+<summary>Click me to reveal the chart of HTML events</summary>
+
+| Event | Trigger Condition | Elements | Notes |
+| :------ | :------ | :------ | :------ |
+| onmouseover | When mouse pointer moves over an element | Most HTML elements including input | Used for hover interaction |
+| onmouseout | When mouse pointer leaves an element | Most HTML elements including input | |
+| onmousedown | When mouse button pressed over an element | Most elements | |
+| onmouseup | When mouse button released over an element | Most elements | |
+| onclick | When user clicks on an element | Most elements | Commonly used event |
+| onfocus | When element receives focus (tab, click, or programmatic) | Input, textarea, select | Particularly useful for inputs |
+| onblur | When element loses focus | Input, textarea, select | |
+| onchange | When element's value is changed and the control loses focus | Input, select, textarea | Fires after commit of the change |
+| oninput | When the user modifies the value | Input, textarea | Fires immediately as value changes |
+| onerror | When loading of resource fails | img, script, iframe, media tags | Does not fire on input elements |
+| onload | When resource loads successfully | body, img, iframe, script, media | Does not fire on input elements |
+| onsubmit | When form is submitted | form element | |
+| onkeydown | When a key is pressed | Most elements | |
+| onkeyup | When a key is released | Most elements | |
+  
+</details>
+
+
 ### Store
 Payload is stored in the database, and victim’s browser will retrieve it once it visit the page. For instance:  
 1. In the attacker’s browser leave html injection comment: \<h1\>test\</h1\>.
@@ -84,12 +108,12 @@ Just for demostration, I completed a few labs on [PortSwigger Academy](https://p
 #### 1. DOM-based XSS in document.write sink using source location.search
 The target application use `document.write()` function to display content from `location.search`, which comes from the URL query string. Allows users to modify the URL, and to inject and execute arbitrary scripts in the page.
 <details markdown="1">
-  <summary>Click me to expand the steps</summary>  
+  <summary>Click me to expand the process</summary>  
 1. Enter random input (e.g., 123456) in the user input (URL query)
 ~~~
 https[://]web-security-academy.net/?search=123456
 ~~~
-  
+
 2. Right-click on the webpage and open the inspection tab
 
 3. Press `Crtl+F` to open search function in inspection tab, and search for input (e.g., 123456)
@@ -108,7 +132,7 @@ Result: <img src="/resources/images/tracker[.]gif?searchTerms=">
 #### 2. DOM XSS in innerHTML sink using source location.search
 The application It assigns data from `location.search` to `innerHTML`, which updates the contents of a `<div>`. Since the URL can be controlled by the user, they can inject malicious HTML or scripts.
 <details markdown="1">
-  <summary>Click me to expand the steps</summary>  
+  <summary>Click me to expand the process</summary>  
 1. Enter random input (e.g., 123456) in the user input (URL query)
 ~~~
 https[://]web-security-academy.net/?search=123456
@@ -131,13 +155,11 @@ Result: <span id="searchMessage"><img src="x" onerror="javascript:alert('XSS')">
 #### 3. DOM XSS in jQuery anchor href attribute sink using location.search source
 In this instance, jQuery’s `$` selector is used to find a link and set its `href` using data from `location.search`, which comes from the URL query string.
 <details markdown="1">
-  <summary>Click me to expand the steps</summary>
+  <summary>Click me to expand the process</summary>
 1. Right-click on the webpage and open the inspection tab. I search for `location.search`, which led me to this script:
-~~~
-  $(function() {
-      $('#backLink').attr("href", (new URLSearchParams(window.location.search)).get('returnPath'));
-      });
-~~~
+>  $(function() {  
+>      $('#backLink').attr("href", (new URLSearchParams(window.location.search)).get('returnPath'));  
+>      });
   
 2. I also notice that the URL contains the `returnPath` query parameter, which aligns with the script. Which uses this query parameter to set the href attribute of the backlink.
 ~~~
@@ -154,6 +176,69 @@ Result: <a id="backLink" href="javascript:prompt(document.cookie)">Back</a>
 #### 4. Stored XSS into anchor href attribute with double quotes HTML-encoded
 This instance contains a stored XSS vulnerability in the comment section. I submit a comment that triggers an alert when the author’s name is clicked.
 <details markdown="1">
-  <summary>Click me to expand the steps</summary>
-1. 
+  <summary>Click me to expand the process</summary>
+1. In the comment section, there are four fields (Comment, Name, Email, Website). After filling out all the fields and submitting my comment, I notice that the Name section contains an external link, which is the website I enter while filling out the form.
+
+2. I use the search function in the inspection tab to look for the website I enter. And I find:
+~~~
+Result: <a id="author" href="Website.com">Name</a>
+~~~
+
+3. Now, I determine that the href attribute accepts user input, so I enter a simple payload into the Website field. It is confirmed that the alert will be triggered when I click on the Name.
+~~~
+Website: javascript:alert('Zebra!')
+Result: <a id="author" href="javascript:alert('Zebra!')">World Smartest Zebra</a>
+~~~
 </details>
+
+#### 5. Reflected XSS into attribute with angle brackets HTML-encoded
+The application contains a reflected XSS vulnerability in the search blog feature, where angle brackets are HTML-encoded. I inject an attribute via XSS that triggers an alert function.
+<details markdown="1">
+  <summary>Click me to expand the process</summary>
+1. Enter random input (e.g., test123) in the user input (URL query)
+~~~
+URL: https[://]web-security-academy[.]net/?search=test123
+~~~
+
+2. Utilize search function in inspection tab, and search for input (e.g., test123)
+~~~
+Result: <input type="text" placeholder="Search the blog..." name="search" value="test123">
+~~~
+
+3. After learning that our input is within a double-quoted attribute, we can try to bypass the double-quoted attributes by breaking out of the attribute value with the injection of double quotes or equivalent encodings, and then adding the HTML events that triggers the payload.
+~~~
+URL: https[://]web-security-academy[.]net/?search=test123" onmouseover="alert(test)
+Result: <input type="text" placeholder="Search the blog..." name="search" value="test123" onmouseover="alert(test)">
+~~~
+{: .box-note}
+**Note:** The `value` attribute is closed early by the injected quote, and `onmouseover="alert(1)` is interpreted as a new `onmouseover` attribute on the <input> tag.
+
+4. Once I hover the cursor over the search bar, it triggers the alert. I identify the XSS vulnerability.
+</details>
+
+#### 5. DOM XSS in jQuery selector sink using a hashchange event
+There is a DOM-based XSS vulnerability on the home page, where jQuery’s `$()` selector is used to auto-scroll to a post, with the title passed through `location.hash`.
+<details markdown="1">
+  <summary>Click me to expand the process</summary>
+1. Firstly, I search for `$()` in the inspection tab, and I find the syntax for this function. Which listens for hash changes in the URL (`/#`) and scrolls the corresponding blog post into view based on the hash value.
+>  $(window).on('hashchange', function(){  
+>    var post = $('section.blog-list h2:contains(' + decodeURIComponent(window.location.hash.slice(1)) + ')');  
+>    if (post) post.get(0).scrollIntoView();  
+>  });  
+  
+2. I append a simple XSS test payload with a hashtag to the URL, and the print function is triggered. The XSS vulnerability in this application is confirmed.
+~~~
+URL: https[://]web-security-academy[.]net/#<img src=x onerror=print()>
+~~~
+
+3. In the case that I want to deliver this payload to others, I utilize `iframe`, `onload`, `img src`, and `onerror` to trigger the payload once they open the page.
+~~~
+URL: <iframe src="https[://]web-security-academy[.]net/#" onload="this.src+='<img src=x onerror=print()>'"></iframe>
+~~~
+{: .box-note}
+**Note:** The `onload` attribute of the `iframe` runs JavaScript to append the print payload directly into the URL fragment after the page loads. The vulnerable page inside the iframe then reads this fragment (<img src=x onerror=print()>) and executes the injected payload.
+
+</details>x
+
+#### 6. Reflected XSS into a JavaScript string with angle brackets HTML encoded
+In this instance, the application is vulnerable to reflected XSS in the search query tracking functionality, where angle brackets are encoded. The reflection occurs inside a JavaScript string. I breaks out of the JavaScript string and triggers the alert() function, to demonstrate the vulnerability.
