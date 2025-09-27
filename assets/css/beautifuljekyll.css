@@ -19,8 +19,8 @@ layout: null
   --footer-hover-col: {{ site.footer-hover-col | default: "#0085A1" }};
 
   /* common CSS variables */
-  --body-font: 'Lora', 'Times New Roman', serif;
-  --header-font: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --body-font: 'Helvetica', 'Helvetica', Helvetica;
+  --header-font: 'Helvetica Neue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --mid-col: #808080;
 }
 
@@ -881,10 +881,10 @@ pre code {
 }
 
 pre {
-  font-size: 1.25rem;
-  line-height: 1.5em;
+  font-size: 0.75rem;
+  line-height: 1em;
   border-radius: 0.25rem;
-  padding: 0.59375rem;
+  padding: 0.65rem;
   background: #d58027;
   color: #eeeeee;
   margin-bottom: 2rem;
@@ -960,22 +960,22 @@ pre {
 }
 
 .box-note {
-  background-color: #eee;
+  background-color: #2F0E75;
   border-left-color: #2980b9;
 }
 
 .box-warning {
-  background-color: #fdf5d4;
+  background-color: #D67733;
   border-left-color: #f1c40f;
 }
 
 .box-error {
-  background-color: #f4dddb;
+  background-color: #DE5850;
   border-left-color: #c0392b;
 }
 
 .box-success {
-  background-color: #98FB98;
+  background-color: #135413;
   border-left-color: #3CB371;
 }
 
