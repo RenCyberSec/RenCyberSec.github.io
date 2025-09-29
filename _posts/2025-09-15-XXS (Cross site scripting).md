@@ -293,25 +293,28 @@ This instance contains a DOM-based XSS vulnerability in the stock checker functi
 <details markdown="1">
   <summary>Click me to expand the process</summary>
   
-1. Firstly, I discover the function in the inspection tab (`right-click on the webpage > inspect`). <br>And I learn that the script builds a `<select name="storeId">` dropdown by reading a `storeId` query parameter from the URL and, if present, adding it as the selected `<option>` before adding the three hard-coded stores (skipping any duplicate). <br>It uses `document.write` with the raw URL value, so unescaped input could be reflected into the page; creating elements and setting textContent/value.
-```javascript
-  var stores = ["London", "Paris", "Milan"];
-  var store = (new URLSearchParams(window.location.search)).get('storeId');
-  document.write('<select name="storeId">');
-  if(store) {
-      document.write('<option selected>' + store + '</option>');
-  }
-  
-  for(var i = 0; i < stores.length; i++) {
-      if(stores[i] === store) {
-          continue;
-      }
-      document.write('<option>' + stores[i] + '</option>');
-  }
-  
-  document.write('</select>');
-```
-  
+1. Firstly, I discover the function in the inspection tab (`right-click on the webpage > inspect`).  
+   And I learn that the script builds a `<select name="storeId">` dropdown by reading a `storeId` query parameter from the URL and, if present, adding it as the selected `<option>` before adding the three hard-coded stores (skipping any duplicate).  
+   It uses `document.write` with the raw URL value, so unescaped input could be reflected into the page; creating elements and setting textContent/value.
+   
+   ```javascript
+   var stores = ["London", "Paris", "Milan"];
+   var store = (new URLSearchParams(window.location.search)).get('storeId');
+   document.write('<select name="storeId">');
+   if(store) {
+       document.write('<option selected>' + store + '</option>');
+   }
+
+   for(var i = 0; i < stores.length; i++) {
+       if(stores[i] === store) {
+           continue;
+       }
+       document.write('<option>' + stores[i] + '</option>');
+   }
+
+   document.write('</select>');
+   ```
+
 2. After discovering that the function takes user input in the `storeId` parameter, I add the `storeId` parameter after the original `productId` parameter with a `&`. I then send a test input (test) to see the application's response. As expected, I am able to add a new selected `<option>`.
 ~~~
 URL: https[://]web-security-academy[.]net/product?productId=2&storeId=test
