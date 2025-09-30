@@ -352,3 +352,33 @@ This instance contains a DOM-based XSS vulnerability in an `AngularJS` expressio
   
 </details>
 -
+
+#### 10. Reflected DOM XSS
+In this instance, a script on the page processes the reflected data (user input) in an unsafe way, ultimately writing it to a dangerous sink.
+
+<details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+1. The `xhr.open` send a GET request (user input retrieve from `path` + `window.location.search`) and fetch data to server using `XMLHttpRequest`.
+
+2. Then it parses the response (`this.responseText`) with `eval()`.
+
+3. Lastly, it dynamically create and display search results (`displaySearchResults`) in the HTML DOM.
+
+   ```javascript
+   var xhr = new XMLHttpRequest();
+   xhr.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          eval('var searchResultsObj = ' + this.responseText);
+          displaySearchResults(searchResultsObj);
+      }
+   };
+   xhr.open("GET", path + window.location.search);
+   xhr.send();
+   ```
+
+you need to craft your input so that you "escape" or break out of the expected JSON structure (e.g., the "value" part). This is because the code expects this.responseText to be a JSON-like object string, and if you inject malicious JavaScript code inside the "value" string as-is, it will be treated as part of the JSON and likely cause a syntax error.
+
+
+</details>
+-
