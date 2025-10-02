@@ -403,7 +403,7 @@ In this instance, a script on the page processes reflected data (user input) wit
 -
 
 #### 11. Stored DOM XSS
-In this instance, I bypass the application's escaping function to store a DOM‑based XSS payload. Whenever a visitor loads the page, the page fetches the comments stored on it and the visitor's browser executes a `prompt()` call."
+In this instance, the comment rendering is vulnerable to stored DOM‑based XSS because `escape()` only replaces the first `<`, `>` so I bypass it which leaves later tags unescaped, allowing arbitrary script execution when the page inserts comments into the DOM.
 
 <details markdown="1">
   <summary>Click me to expand the process</summary>
@@ -433,29 +433,32 @@ In this instance, I bypass the application's escaping function to store a DOM‑
 3. A prompt pops up with a message after I submit (store) the payload in the comment section, which indicates the filter mechanism (`replace()` function) was bypassed and the application is still vulnerable to XSS."
 
 </details>
+
+**Suggestion**: Make the escaping correct (use [global replacements or replaceAll/regex](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#description)), deploy a strict [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline handlers, and protect cookies (HttpOnly/SameSite) to reduce impact.
+
 -
 
 #### 12. Reflected XSS into HTML context with most tags and attributes blocked
-In this instance, I discover the vulnerability of XSS in search function of the application, and bypass the WAF to calls the print() function.
+In this instance, the `/?search` parameter is being reflected into the page as HTML without proper contextual encoding or sanitization, and the WAF’s tag/attribute filtering is insufficient, so I bypass the filter and executes `prompt()`.
 
 <details markdown="1">
   <summary>Click me to expand the process</summary>
 
-1. After using general XSS testing payloads, I learned that the WAF is blocking the tags.
+1. After using general XSS testing payloads, I learn that the WAF is blocking some HTML tags to prevent common XSS.
 
    ~~~
    Payload: <img src="0" onerror="prompt()">
    Respond: "Tag is not allowed"
    ~~~
 
-2. To find out which tag wasn't blocked, I used Burp Intruder with all tag options (retrieved from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)). The results showed that `<body>` was not blocked by the WAF.
+2. To find out which tag isn't blocked, I used Burp Intruder with all tag options as payload (retrieved from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)). The result tells me that `<body>` is not blocked by the WAF.
 
    ~~~
    Burp Intruder:
      GET /?search=<Payload Position> HTTP/2
    ~~~
 
-3. After enclosing payloads within the `<body>` tag, I learned that the WAF is also blocking some attributes.
+3. After enclosing payloads within the `<body>` tag, I learn that the WAF is also blocking some attributes.
 
    ~~~
    Payload: <body onload="prompt()">
@@ -466,17 +469,22 @@ In this instance, I discover the vulnerability of XSS in search function of the 
 
    ~~~
    Burp Intruder:
-     GET /?search=<body%20<Payload Position>=print()>
+     GET /?search=<body%20<Payload Position>=prompt()>
    ~~~
 
 5. To make the exploitation more realistic, after going through the unfiltered event attributes:
-   I used an `<iframe>` to embeds another webpage (`src="https[://]vulnerable[.]com/`) into the current page.
-   The query parameter `search` then load the URL-encoded payload `%22%3E%3Cbody+onresize=print()%3E`
-   `this.style.width` to adjust the iframe’s height, and trigger the `onresize` and `prompt()`.
+   I used an `<iframe>` to embeds this vulnerable webpage (`src="https[://]vulnerable[.]com/`).
+   The query parameter `/?search` then load the URL-encoded payload `%22%3E%3Cbody+onresize=prompt()%3E`
+   `[this.style.width](https://www.w3schools.com/jsref/prop_style_width.asp)` to adjust the iframe’s size, which will trigger the `onresize` event and `prompt()`.
 
    ~~~
-   <iframe src="https[://]vulnerable[.]com/?search=%22%3E%3Cbody+onresize=print()%3E" onload=this.style.height='50px'></iframe>
+   <iframe src="https[://]vulnerable[.]com/?search=%22%3E%3Cbody+onresize=prompt()%3E" onload=this.style.height='88px'></iframe>
    ~~~
+
+6. Because I bypass the WAF filter with non-filterd tag and attribution, the function `prompt()` will be executed once someone clicks on the link.
 
 </details>
+
+**Suggestion**: Remediate by [treating user input strictly as data](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#xss-defense-philosophy) (encode/escape for the HTML context or render search terms as text nodes, never raw HTML), apply a server‑side allowlist sanitizer (or a vetted library such as [DOMPurify](https://www.npmjs.com/package/dompurify) when sanitization is required), enforce a strong [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline event handlers/scripts, and [harden WAF normalization/rules](https://docs.oracle.com/en-us/iaas/Content/WAF/Protections/protections_management.htm) to catch decoded event-attribute payloads.
+
 -
