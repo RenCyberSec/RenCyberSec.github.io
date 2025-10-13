@@ -210,7 +210,11 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
 
   6. Because I bypass the WAF filter with non-filterd tag and attribution, the function `prompt()` will be executed once someone clicks on the link.
 
-  **Suggestion**: Remediate by [treating user input strictly as data](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#xss-defense-philosophy) (encode/escape for the HTML context or render search terms as text nodes, never raw HTML), apply a server‑side allowlist sanitizer (or a vetted library such as [DOMPurify](https://www.npmjs.com/package/dompurify) when sanitization is required), enforce a strong [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline event handlers/scripts, and [harden WAF normalization/rules](https://docs.oracle.com/en-us/iaas/Content/WAF/Protections/protections_management.htm) to catch decoded event-attribute payloads.
+  _**Suggestion**_
+  1. [Treating user input strictly as data](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#xss-defense-philosophy). Encode/escape for the HTML context or render search terms as text nodes, never raw HTML
+  2. Apply a server‑side allowlist sanitizer (or a vetted library such as [DOMPurify](https://www.npmjs.com/package/dompurify) when sanitization is required)
+  3. Enforce [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline event handlers/scripts.
+  4. [Harden WAF normalization/rules](https://docs.oracle.com/en-us/iaas/Content/WAF/Protections/protections_management.htm) to catch decoded event-attribute payloads.
 
   </details>
   -
@@ -252,7 +256,12 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
      </script>
      ```
 
-  **Suggestion**: Use a proven HTML sanitizer (e.g. [DOMPurify](https://www.npmjs.com/package/dompurify)) on output that must contain HTML (server-side). Configure [allowlists](https://help.ivanti.com/ht/help/en_US/ISM/2025/admin-user/Content/Configure/SetUpWizard/Configure%20Allowed%20Tags%20and%20Attribute.htm), only permit required tags and attributes, and explicitly exclude all event handler attributes (e.g., on*). Apply the appropriate [encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) based on where the data will be used (body, attribute, JavaScript string, URL, CSS), and do not rely on a single generic encoding for all contexts. Prefer [framework helpers](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#framework-security) and templating engines that provide automatic, correct output escaping rather than hand‑rolling your own escaping logic. Remove unnecessary HTML rendering of user‑supplied content whenever possible. If a field is a search query or otherwise simple text, return it as plain text (properly escaped) instead of rendering it as HTML with tags.
+  _**Suggestion**_
+  1. Use a proven HTML sanitizer (e.g. [DOMPurify](https://www.npmjs.com/package/dompurify)) on output that must contain HTML (server-side)
+  2. Configure [allowlists](https://help.ivanti.com/ht/help/en_US/ISM/2025/admin-user/Content/Configure/SetUpWizard/Configure%20Allowed%20Tags%20and%20Attribute.htm), only permit required tags and attributes, and explicitly exclude all event handler attributes (e.g., on*).
+  3. Apply the appropriate [encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) based on where the data will be used (body, attribute, JavaScript string, URL, CSS), and do not rely on a single generic encoding for all contexts.
+  4. Prefer [framework helpers](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#framework-security) and templating engines that provide automatic, correct output escaping rather than hand‑rolling your own escaping logic.
+  5. Remove unnecessary HTML rendering of user‑supplied content whenever possible. If a field is a search query or otherwise simple text, return it as plain text (properly escaped) instead of rendering it as HTML with tags.
   
   </details>
   -
@@ -286,7 +295,10 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
      <svg><animatetransform onbegin='prompt("Is this vulnerable to XSS?")'>
      ~~~
    
-  **Suggestion**: Treat any HTML or SVG in user input as untrusted. Ensure [server‑side output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) is applied. If you must allow HTML/SVG, sanitize server‑side with a library that understands and safely handles SVG (e.g., [DOMPurify](https://www.npmjs.com/package/dompurify)). Deploy a strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP) that avoids unsafe-inline and blocks inline script execution and data:/javascript: URLs (use script-src 'self' plus nonces/hashes if inline scripts are required).
+  _**Suggestion**_
+  1. Treat any HTML or SVG in user input as untrusted. Ensure [server‑side output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) is applied.
+  2. If you must allow HTML/SVG, sanitize server‑side with a library that understands and safely handles SVG (e.g., [DOMPurify](https://www.npmjs.com/package/dompurify)).
+  3. Deploy [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP) that avoids unsafe-inline and blocks inline script execution and data:/javascript: URLs (use script-src 'self' plus nonces/hashes if inline scripts are required).
 
   </details>
   -
@@ -321,7 +333,12 @@ In this instance, I discovered that untrusted input from the URL query string is
      Response: <link rel="canonical" href="https[://]web-security-academy[.]net/?test" accesskey="x" onclick="prompt(&quot;XSS&nbsp;vulnerable?&nbsp;YES!&quot;)">
      ~~~
 
-  **Suggestion**: Don't reflect user input directly into HTML, ensure [server‑side output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) is applied. [Sanitize & validate input](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html#implementing-input-validation), if input used as a URL, validate against an allow-list of permitted patterns. Use [DOM methods](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html#rule-6-populate-the-dom-using-safe-javascript-functions-or-properties) to create and manage elements, attributes, and text nodes safely. Add/strengthen [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP). Lastly, use [HTTP security headers](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html#security-headers).
+  _**Suggestion**_
+  1. Don't reflect user input directly into HTML, ensure [server‑side output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) is applied.
+  2. [Sanitize & validate input](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html#implementing-input-validation), if input used as a URL, validate against an allow-list of permitted patterns.
+  3. Use [DOM methods](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html#rule-6-populate-the-dom-using-safe-javascript-functions-or-properties) to create and manage elements, attributes, and text nodes safely.
+  4. Add/strengthen [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP).
+  5. Use [HTTP security headers](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html#security-headers).
 
   </details>
   -
@@ -330,7 +347,7 @@ In this instance, I discovered that untrusted input from the URL query string is
   In this instance, I discover a XSS vulnerability in the search tracking code. The application inserts user input directly into a JavaScript single-quoted string and escapes single quotes with a backslash, but it does not prevent breaking out of the surrounding script context (angle bracket > not escaped). I terminate the `<script>` tag and injecting a new `<script>` block.
 
   <details markdown="1">
-    <summary>Click me to expand the process</summary>
+  <summary>Click me to expand the process</summary>
 
   1. I start by testing the input (`test_input`) to see where it is rendered in the source code, then I find my input is in a search function.
      ```javascript
@@ -363,13 +380,60 @@ In this instance, I discovered that untrusted input from the URL query string is
        ';document.write('
      ```
    
-  **Suggestion**: Validate and sanitize user input on client side to reject or clean inputs containing malicious characters or script tags. When inserting user input into JS strings, use [output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) that safely escapes all special characters that could break the context, not just single quotes and backslashes. Don't place variables into [dangerous contexts](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#dangerous-contexts) as even with output encoding. Implement [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#defense-against-xss) that limits the sources and inline script execution. 
+Suggestion
+  1. Validate and sanitize user input on client side to reject or clean inputs containing malicious characters or script tags.
+  2. When inserting user input into JS strings, use [output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) that safely escapes all special characters that could break the context, not just single quotes and backslashes.
+  3. Don't place variables into [dangerous contexts](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#dangerous-contexts) as even with output encoding.
+  4. Implement [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#defense-against-xss) that limits the sources and inline script execution. 
 
   </details>
   -
 
   _**9. Reflected XSS into a JavaScript string with angle brackets and double quotes HTML-encoded and single quotes escaped**_  
-This lab contains a reflected cross-site scripting vulnerability in the search query tracking functionality where angle brackets and double are HTML encoded and single quotes are escaped.
+  In this instance, user input is inserted into a <script> tag with insufficient sanitization. Although special characters (e.g., `<>`, `"`) are HTML-encoded, single quotes (`'`) are only escaped with a backslash (`\'`), I bypass the protection by escaping the backslash itself.
+
+  <details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+  1. I start by testing the input (`test_input`) to see where it is rendered in the source code, then I find my input is in a search function.
+     ```javascript
+     <script>
+       var searchTerms = 'test_input';
+       document.write('<img src="/resources/images/tracker.gif?searchTerms='+encodeURIComponent(searchTerms)+'">');
+     </script>
+     ```
+  2. To test whether I can break out of the single quote (`'`), I try entering a single quote and inserting a new tag, but the single quote is escaped with a backslash (`\'`), and the angle bracket and double quote are HTML-encoded for escaping.
+     ```javascript
+     <script>
+       var searchTerms = '\' &lt;/script&gt;&lt;img src=&quot;x&quot; onerror=&quot;prompt()&quot;&gt;';
+     </script>
+     ```
+  3. I try to escape the backslash (`\\'`), and it works.
+     ```javascript
+     <script>
+       var searchTerms = '\\'';
+     </script>
+     ```   
+  4. Now I know that the single quote will be escaped with a backslash (`\'`), but the backslash itself can be escaped by inserting another backslash (`\\'`). Double quotes and angle brackets are HTML-encoded for escaping. We can craft the payload:
+     - Backslash neutralizes the escaping (`\\'`).
+     - Hyphen serves as a valid operator between two expressions ensures the payload executes as JavaScript ('string' - prompt()).
+     - Double forwardslash comments out trailing quotes (`//`).
+     ```javascript
+     <script>
+       var searchTerms = '\\' - prompt()//';
+     </script>
+     ```
+     
+  5. As the web application response with a pop up window, I am assure that it is vulnerable to reflected XSS.
+
+  _**Suggestion**_
+  1. Apply JS [context-aware encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) when injecting untrusted data into JavaScript,
+  2. Validate and sanitize user input on client side to reject or clean inputs containing malicious characters or script tags.
+  3. Implement a [CSP header](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#defense-against-xss) to reduce the impact of XSS.
+  4. Employ frameworks or libraries (e.g., [angular](https://angular.dev/best-practices/security#preventing-cross-site-scripting-xss)) that automatically escape user input based on context, or server-side templating engines with built-in sanitization.
+
+  </details>
+  -
 
 
 </details>
@@ -567,7 +631,7 @@ _**5. DOM XSS in document.write sink using source location.search inside a selec
 
 </details>
 
-## 3.Store-Based XSS
+## 3. Store-Based XSS
 Payload is stored in the database, and victim’s browser will retrieve it once it visit the page. For instance:  
 1. In the attacker’s browser leave html injection comment: \<h1\>test\</h1\>.
 2. Visit the same page from victim’s browser
@@ -630,7 +694,55 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
 
   3. A prompt pops up with a message after I submit (store) the payload in the comment section, which indicates the filter mechanism (`replace()` function) was bypassed and the application is still vulnerable to XSS.
 
-  **Suggestion**: Make the escaping correct (use [global replacements or replaceAll/regex](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#description)), deploy a strict [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline handlers, and protect cookies (HttpOnly/SameSite) to reduce impact.
+  _**Suggestion**_
+  1. Make the escaping correct (use [global replacements or replaceAll/regex](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#description))
+  2. Deploy [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline handlers, and protect cookies (HttpOnly/SameSite) to reduce impact.
+
+  </details>
+  -
+
+  _**3. Stored XSS into onclick event with angle brackets and double quotes HTML-encoded and single quotes and backslash escaped**_  
+  In this instance, I discover a Stored XSS vulnerability in the comment feature, specifically within the onclick event handler of anchor (`<a>`) elements. User input (from the “Website” field) is embedded directly into the JavaScript code inside an HTML attribute without applying proper context-specific encoding or sanitization. I was able to bypass the escaping and trigger the prompt by encoding my payload as an HTML entity.
+  
+  <details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+  1. In the comment section, there are four fields (Comment, Name, Email, Website). After filling out all the fields and submitting my comment, I notice that the Name section contains an external link, which is the website I enter while filling out the form.
+
+  2. I look into the inspection tab and pull out the syntax
+     ```javascript
+     <a id="author" href="Website"
+     onclick="var tracker={track(){}};tracker.track('Website');">User_Name</a>
+     ```
+     
+  3. I try to break out of the single quote in the `onclick` event, so when the user clicks an external link on the website, it will trigger the `onclick` event.
+     But I notice that my single quote is escaped (`\'`), so the prompt isn't executed.
+     ```javascript
+     <a id="author" href="http://Website.com\'); prompt();//)"
+     onclick="var tracker={track(){}};tracker.track('http://Website.com\'); prompt();//');">User_Name</a>
+     ```
+     {: .box-note}
+     **Note:** The user input is used inside the `tracker.track()` call, enclosed in single quotes. So I close the first statement (`');`), insert the testing payload, then close the second statement (`prompt();`). Lastly, I use double forward slashes (`//`) to comment out the rest of the syntax.
+     
+  4. I use an additional backslash to neutralize the backslash that's meant to escape the single quote (`\'`), but it is also escaped (`\\\'`).
+
+  5. To bypass this, I use [Cyberchef](https://cyberchef.io/#recipe=To_HTML_Entity(false,'Named%20entities')&input=Jyk7cHJvbXB0KCk7Ly8) to HTML-encode my payload. 
+     ~~~
+     Plain-text: ');prompt();//
+     HTML-Entity: &apos;&rpar;&semi;prompt&lpar;&rpar;&semi;&sol;&sol;
+     ~~~
+
+  6. After submitting the website with the encoded payload appended, I successfully bypassed the filter. I can trigger the prompt by clicking the website’s external link, which proves the stored XSS vulnerability.
+     ```javascript
+     <a id="author" href="http://Website.com\'); prompt();//"
+     onclick="var tracker={track(){}};tracker.track('http://Website.com\'); prompt();//');">tes</a>
+     ```
+
+  _**Suggestion**_
+  1. Use JS and HTML attribute [context-aware output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) before rendering untrusted data inside event handlers or inline scripts. Avoid embedding untrusted user input directly into inline JavaScript.
+  2. [validate inputs](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html#implementing-input-validation) (e.g., quotes, backslashes, and parentheses) in the “Website” field.
+  3. Avoid writing event handlers directly inline in the HTML (e.g., `<button onclick="doSomething()">`), [separate the structure (HTML) from behavior (JavaScript)](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events#using_addeventlistener).
+  4. Apply a [CSP header](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#defense-against-xss) that blocks inline scripts and restricts script execution to trusted sources only.
 
   </details>
   -
