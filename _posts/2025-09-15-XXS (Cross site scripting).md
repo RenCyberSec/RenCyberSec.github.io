@@ -838,7 +838,24 @@ Just for demostration, I completed some labs on [PortSwigger Academy](https://po
   </details>
   -
 
+  _**6. Exploiting cross-site scripting to bypass CSRF protections**_  
 
+  <details markdown="1">
+  <summary>Click me to expand the process</summary>
+
+  1. 
+
+
+
+  _**Suggestion**_
+  1. Use a proven HTML sanitizer (e.g. [DOMPurify](https://www.npmjs.com/package/dompurify)) to safely handle rich-text or HTML input.
+  2. [Escape characters](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding) appropriately for the output context (HTML, JavaScript, or attributes).
+  3. Apply a [CSP header](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#defense-against-xss) that blocks inline scripts and restrict script sources.
+  4. [validate inputs](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html#implementing-input-validation) (e.g., quotes, backslashes, and parentheses) in all user input fields.
+  5. On client-side, disable [autofill in sensitive contexts](https://cybernews.com/security/password-managers-autofill-credentials-for-attackers/).
+
+  </details>
+  -
 
 </details>
 
@@ -848,25 +865,4 @@ User could inject the following code into a vulnerable website, causing an autom
    src=x onerror="window.location.href='<$url>'"
    ~~~
 
-### HTML Events
-<details markdown="1">
-<summary>Click me to reveal the chart of HTML events</summary>
-
-| Event | Trigger Condition | Elements | Notes |
-| :------ | :------ | :------ | :------ |
-| onmouseover | When mouse pointer moves over an element | Most HTML elements including input | Used for hover interaction |
-| onmouseout | When mouse pointer leaves an element | Most HTML elements including input | |
-| onmousedown | When mouse button pressed over an element | Most elements | |
-| onmouseup | When mouse button released over an element | Most elements | |
-| onclick | When user clicks on an element | Most elements | Commonly used event |
-| onfocus | When element receives focus (tab, click, or programmatic) | Input, textarea, select | Particularly useful for inputs |
-| onblur | When element loses focus | Input, textarea, select | |
-| onchange | When element's value is changed and the control loses focus | Input, select, textarea | Fires after commit of the change |
-| oninput | When the user modifies the value | Input, textarea | Fires immediately as value changes |
-| onerror | When loading of resource fails | img, script, iframe, media tags | Does not fire on input elements |
-| onload | When resource loads successfully | body, img, iframe, script, media | Does not fire on input elements |
-| onsubmit | When form is submitted | form element | |
-| onkeydown | When a key is pressed | Most elements | |
-| onkeyup | When a key is released | Most elements | |
-  
 </details>
